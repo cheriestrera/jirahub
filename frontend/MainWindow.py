@@ -132,8 +132,6 @@ class LoginWindow(Frame):  # Inherit from Frame
         ]
     
     def handle_login(self):
-        print("Login button clicked")
-
         email = self.email_entry.get()
         password = self.password_entry.get()
 
@@ -141,15 +139,17 @@ class LoginWindow(Frame):  # Inherit from Frame
             messagebox.showwarning("Input Error", "Please enter both email and password")
             return
 
+    #    poopp
         user = self.auth_service.login(email, password)
+
         if user:
             messagebox.showinfo("Success", "Login successful!")
+            print("dashboard running")
             self.scene_manager.show_scene("dashboard", user=user)
         else:
             messagebox.showerror("Login Failed", "Invalid credentials")
     
     def handle_register(self):
-        print("Sign Up button clicked")
         self.scene_manager.show_scene("signup_admin")
     
     def handle_forgot_password(self):
