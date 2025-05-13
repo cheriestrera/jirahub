@@ -201,42 +201,42 @@ class DashboardTemplate(Frame):
         self.images.append(self.button_image_8)
         self.button_8 = Button(
             self,
-        image=self.button_image_8,
-        borderwidth=0,
-        highlightthickness=0,
-        command=self.handle_payroll,  # Example functionality
-        relief="flat",
-        cursor="hand2"
-    )
-    self.button_8.place(x=37.0, y=377.0, width=51.0, height=24.0)
+            image=self.button_image_8,
+            borderwidth=0,
+            highlightthickness=0,
+            command=self.handle_payroll,  # Example functionality
+            relief="flat",
+            cursor="hand2"
+        )
+        self.button_8.place(x=37.0, y=377.0, width=51.0, height=24.0)
 
-    # Button 9
-    self.button_image_9 = PhotoImage(file=relative_to_assets("button_9.png"))
-    self.images.append(self.button_image_9)
-    self.button_9 = Button(
-        self,
-        image=self.button_image_9,
-        borderwidth=0,
-        highlightthickness=0,
-        command=self.handle_settings,  # Example functionality
-        relief="flat",
-        cursor="hand2"
-    )
-    self.button_9.place(x=37.0, y=405.0, width=55.0, height=24.0)
+        # Button 9
+        self.button_image_9 = PhotoImage(file=relative_to_assets("button_9.png"))
+        self.images.append(self.button_image_9)
+        self.button_9 = Button(
+            self,
+            image=self.button_image_9,
+            borderwidth=0,
+            highlightthickness=0,
+            command=self.handle_settings,  # Example functionality
+            relief="flat",
+            cursor="hand2"
+        )
+        self.button_9.place(x=37.0, y=405.0, width=55.0, height=24.0)
 
-    # Button 10
-    self.button_image_10 = PhotoImage(file=relative_to_assets("button_10.png"))
-    self.images.append(self.button_image_10)
-    self.button_10 = Button(
-        self,
-        image=self.button_image_10,
-        borderwidth=0,
-        highlightthickness=0,
-        command=self.handle_reports,  # Example functionality
-        relief="flat",
-        cursor="hand2"
-    )
-    self.button_10.place(x=37.0, y=432.0, width=95.0, height=24.0)
+        # Button 10
+        self.button_image_10 = PhotoImage(file=relative_to_assets("button_10.png"))
+        self.images.append(self.button_image_10)
+        self.button_10 = Button(
+            self,
+            image=self.button_image_10,
+            borderwidth=0,
+            highlightthickness=0,
+            command=self.handle_reports,  # Example functionality
+            relief="flat",
+            cursor="hand2"
+        )
+        self.button_10.place(x=37.0, y=432.0, width=95.0, height=24.0)
 
     def navigate_home(self):
         """Handle navigation to home/dashboard"""
@@ -257,40 +257,40 @@ class DashboardTemplate(Frame):
         else:
             print("Department view clicked")
 
-def handle_employee_directory(self):
-    """Handle employee directory button click"""
-    if self.scene_manager:
-        self.scene_manager.show_scene("employees")
-    else:
-        print("Employee directory clicked")
+    def handle_employee_directory(self):
+        """Handle employee directory button click"""
+        if self.scene_manager:
+            self.scene_manager.show_scene("employees")
+        else:
+            print("Employee directory clicked")
 
-def handle_attendance(self):
-    """Handle attendance button click"""
-    if self.scene_manager:
-        self.scene_manager.show_scene("attendance")
-    else:
-        print("Attendance clicked")
+    def handle_attendance(self):
+        """Handle attendance button click"""
+        if self.scene_manager:
+            self.scene_manager.show_scene("attendance")
+        else:
+            print("Attendance clicked")
 
-def handle_payroll(self):
-    """Handle payroll button click"""
-    if self.scene_manager:
-        self.scene_manager.show_scene("payroll")
-    else:
-        print("Payroll clicked")
+    def handle_payroll(self):
+        """Handle payroll button click"""
+        if self.scene_manager:
+            self.scene_manager.show_scene("payroll")
+        else:
+            print("Payroll clicked")
 
-def handle_settings(self):
-    """Handle settings button click"""
-    if self.scene_manager:
-        self.scene_manager.show_scene("settings")
-    else:
-        print("Settings clicked")
+    def handle_settings(self):
+        """Handle settings button click"""
+        if self.scene_manager:
+            self.scene_manager.show_scene("settings")
+        else:
+            print("Settings clicked")
 
-def handle_reports(self):
-    """Handle reports button click"""
-    if self.scene_manager:
-        self.scene_manager.show_scene("reports")
-    else:
-        print("Reports clicked")
+    def handle_reports(self):
+        """Handle reports button click"""
+        if self.scene_manager:
+            self.scene_manager.show_scene("reports")
+        else:
+            print("Reports clicked")
 
     def destroy(self):
         """Clean up resources when destroyed"""
