@@ -107,6 +107,7 @@ class AuthService:
                     })
                 return True, "Registration successful!"
             except Exception as e:
+                print("Firestore write error:", e)
                 return False, f"User created but failed to save extra info: {e}"
         else:
             error_message = data.get("error", {}).get("message", "Unknown error")
