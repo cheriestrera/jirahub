@@ -1,5 +1,6 @@
+import requests
 from pathlib import Path
-from tkinter import Frame, Tk, Canvas, Entry, Button, PhotoImage, messagebox
+from tkinter import Frame, Tk, Canvas, Entry, Button, PhotoImage, messagebox, simpledialog
 from backend.MainWindowFunction import AuthService
 
 OUTPUT_PATH = Path(__file__).parent
@@ -12,7 +13,7 @@ class SignUpAdminWindow(Frame):
     def __init__(self, master, scene_manager):
         super().__init__(master)
         self.scene_manager = scene_manager
-        #self.auth_service = AuthService()
+        self.auth_service = AuthService()
         self.keep_images_reference = []
         self.setup_ui()
     
@@ -58,6 +59,9 @@ class SignUpAdminWindow(Frame):
         
         self.button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
         self.keep_images_reference.append(self.button_image_1)
+
+        self.button_image_2 = PhotoImage(file=relative_to_assets("button_2.png"))
+        self.keep_images_reference.append(self.button_image_2)
     
     def create_text_elements(self):
         """Create all text elements on the canvas"""
@@ -155,7 +159,9 @@ class SignUpAdminWindow(Frame):
     
     def create_buttons(self):
         """Create all buttons"""
+        # Register Button (button_1)
         self.register_button = Button(
+            self.master,  # Changed to master since canvas is on master
             image=self.button_image_1,
             borderwidth=0,
             highlightthickness=0,
@@ -163,13 +169,31 @@ class SignUpAdminWindow(Frame):
             relief="flat",
             cursor="hand2"
         )
+
         self.register_button.place(
-            x=777.0,
-            y=548.0,
+            x=778.0,
+            y=531.0,
             width=324.0,
             height=64.0
         )
-    
+
+    # Cancel Button (button_2) - THIS IS THE FIXED VERSION
+        self.cancel_button = Button(
+            self.master,  # Parent should match other widgets
+            image=self.button_image_2,  # Use the loaded image
+            borderwidth=0,
+            highlightthickness=0,
+            command=self.handle_clear,  # Clear form handler
+            relief="flat",
+            cursor="hand2"
+        )
+        self.cancel_button.place(
+            x=1116.0,
+            y=531.0,
+            width=214.0,
+            height=64.0
+        )
+
     def handle_register(self):
         """Handle the registration button click"""
         name = self.name_entry.get().strip()
@@ -186,11 +210,7 @@ class SignUpAdminWindow(Frame):
             return
         
         # Ask for admin code (in a real app, this would be more secure)
-        admin_code = messagebox.askstring(
-            "Admin Verification",
-            "Enter admin registration code:",
-            parent=self.root
-        )
+        admin_code = simpledialog.askstring("Admin Code", "Enter the admin code:")
         
         if not admin_code:
             return
@@ -203,6 +223,10 @@ class SignUpAdminWindow(Frame):
             self.scene_manager.show_scene("login")  # Return to login # Close the registration window
         else:
             messagebox.showerror("Registration Failed", message)
+
+    def handle_clear(self):
+        """Switch back to the main (login) window."""
+        self.scene_manager.show_scene("login")
 
 if __name__ == "__main__":
     root = Tk()

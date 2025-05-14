@@ -14,12 +14,12 @@ class AuthService:
                     r"C:\Users\Marites\Downloads\CC15project\backend\serviceAccountKey.json"
                 )
                 firebase_admin.initialize_app(cred)
-                self.auth = auth
-                self.db = firestore.client()
             except Exception as e:
                 logging.error(f"Firebase initialization failed: {str(e)}")
                 raise
-
+        
+        self.auth = auth
+        self.db = firestore.client()
         self.api_key = "AIzaSyDgOE9QEdwf0KAAJk1d0Zx4SvHzbK_rTzk"  # <-- Replace with your actual API key
 
     def login(self, email: str, password: str) -> Optional[Dict[str, Any]]:
@@ -82,3 +82,32 @@ class AuthService:
         """Get the currently authenticated user"""
         # In a real implementation, you would track the current user session
         return None
+    
+    def register_admin(self, name, email, password, admin_code):
+        # Optionally check admin_code here
+        url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={self.api_key}"
+        payload = {
+            "email": email,
+            "password": password,
+            "returnSecureToken": True
+        }
+        response = requests.post(url, json=payload)
+        data = response.json()
+        if "idToken" in data:
+            # Save 'name' and other info to Firestore
+            try:
+                # Get the user's UID from the response
+                local_id = data.get("localId")
+                if local_id:
+                    self.db.collection('users').document(local_id).set({
+                        'name': name,
+                        'email': email,
+                        'is_admin': True,
+                        'created_at': firestore.SERVER_TIMESTAMP
+                    })
+                return True, "Registration successful!"
+            except Exception as e:
+                return False, f"User created but failed to save extra info: {e}"
+        else:
+            error_message = data.get("error", {}).get("message", "Unknown error")
+            return False, error_message
