@@ -114,7 +114,7 @@ class DashboardTemplate(Frame):
             image=self.button_image_1,
             borderwidth=0,
             highlightthickness=0,
-            command=delete_employee,
+            command=self.delete_employees,
             relief="flat",
             cursor="hand2"
         )
@@ -128,7 +128,7 @@ class DashboardTemplate(Frame):
             image=self.button_image_2,
             borderwidth=0,
             highlightthickness=0,
-            command=self.update_employee,
+            command=self.update_employees,
             relief="flat",
             cursor="hand2"
         )
@@ -142,7 +142,7 @@ class DashboardTemplate(Frame):
             image=self.button_image_3,
             borderwidth=0,
             highlightthickness=0,
-            command=self.create_employee,
+            command=self.create_employees,
             relief="flat",
             cursor="hand2"
         )
@@ -253,14 +253,14 @@ class DashboardTemplate(Frame):
         else:
             self.master.destroy() 
 
-    def update_employee(self):
+    def update_employees(self):
         """update emp"""
     
-    def delete_employee(self):
+    def delete_employees(self):
         """delete emp"""
 
-    def create_employee(self):
-        """create emp"""
+    def create_employees(self):
+        self.scene_manager.show_scene("create_employee")
 
     def view_all_employees(self):
         """View all employees"""

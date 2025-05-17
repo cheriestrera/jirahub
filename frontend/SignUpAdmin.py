@@ -1,4 +1,4 @@
-import requests
+import threading
 from pathlib import Path
 from tkinter import Frame, Tk, Canvas, Entry, Button, PhotoImage, messagebox, simpledialog
 from backend.SignUpFunction import register_admin
@@ -194,35 +194,34 @@ class SignUpAdminWindow(Frame):
         )
 
     def handle_register(self):
-        """Handle the registration button click"""
         name = self.name_entry.get().strip()
         email = self.email_entry.get().strip()
         password = self.password_entry.get().strip()
-        
-        # Validate inputs
+
         if not all([name, email, password]):
             messagebox.showwarning("Input Error", "Please fill in all fields")
             return
-        
+
         if len(password) < 8:
             messagebox.showwarning("Input Error", "Password must be at least 8 characters")
             return
-        
-        # Ask for admin code (in a real app, this would be more secure)
+
         admin_code = simpledialog.askstring("Admin Code", "Enter the admin code:")
-        
         if not admin_code:
             return
-        
-        # Attempt registration
-        success, message = register_admin(name, email, password, admin_code)
-        
-        if success:
-            messagebox.showinfo("Success", "You may now login")
-            self.scene_manager.show_scene("login")  # Return to login # Close the registration window
-        else:
-            messagebox.showerror("Registration Failed", message)
 
+        def do_register():
+            success, message = register_admin(name, email, password, admin_code)
+            if success:
+                self.after(0, lambda: [
+                    messagebox.showinfo("Success", "You may now login"),
+                    self.scene_manager.show_scene("login")
+                ])
+            else:
+                self.after(0, lambda: messagebox.showerror("Registration Failed", message))
+
+        threading.Thread(target=do_register).start()
+    
     def handle_clear(self):
         """Switch back to the main (login) window."""
         self.scene_manager.show_scene("login")
