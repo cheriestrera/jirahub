@@ -1,10 +1,6 @@
-import sys
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
+from tkinter import Tk, Canvas, Entry, Button, PhotoImage, messagebox
 from tkinter.ttk import Combobox
-from backend.CreateEmployeeFunction import CreateEmployeeFunction
-
-sys.path.append(str(Path(__file__).parent.parent / "backend"))
 from backend.CreateEmployeeFunction import CreateEmployeeFunction
 
 OUTPUT_PATH = Path(__file__).parent
@@ -38,6 +34,7 @@ backend = CreateEmployeeFunction()
 window = Tk()
 window.geometry("1440x706")
 window.configure(bg="#FFB37F")
+window.title("Create Employee")
 
 canvas = Canvas(
     window,
@@ -61,6 +58,7 @@ canvas.create_text(
 entry_image_1 = PhotoImage(file=relative_to_assets("entry_1.png"))
 canvas.create_image(565.0, 318.0, image=entry_image_1)
 entry_1 = EntryWithPlaceholder(
+    window,
     bd=0,
     bg="#FFFFFF",
     fg="#000716",
@@ -72,6 +70,7 @@ entry_1.place(x=423.0, y=298.0, width=284.0, height=39.0)
 entry_image_2 = PhotoImage(file=relative_to_assets("entry_2.png"))
 canvas.create_image(719.5, 259.0, image=entry_image_2)
 entry_2 = EntryWithPlaceholder(
+    window,
     bd=0,
     bg="#FFFFFF",
     fg="#000716",
@@ -83,6 +82,7 @@ entry_2.place(x=423.0, y=239.0, width=593.0, height=39.0)
 entry_image_3 = PhotoImage(file=relative_to_assets("entry_3.png"))
 canvas.create_image(719.5, 436.0, image=entry_image_3)
 entry_3 = EntryWithPlaceholder(
+    window,
     bd=0,
     bg="#FFFFFF",
     fg="#000716",
@@ -94,6 +94,7 @@ entry_3.place(x=423.0, y=416.0, width=593.0, height=39.0)
 entry_image_4 = PhotoImage(file=relative_to_assets("entry_4.png"))
 canvas.create_image(719.5, 495.0, image=entry_image_4)
 entry_4 = EntryWithPlaceholder(
+    window,
     bd=0,
     bg="#FFFFFF",
     fg="#000716",
@@ -105,6 +106,7 @@ entry_4.place(x=423.0, y=475.0, width=593.0, height=39.0)
 entry_image_5 = PhotoImage(file=relative_to_assets("entry_5.png"))
 canvas.create_image(879.0, 318.0, image=entry_image_5)
 entry_5 = EntryWithPlaceholder(
+    window,
     bd=0,
     bg="#FFFFFF",
     fg="#000716",
@@ -122,7 +124,6 @@ department_dropdown = Combobox(
     font=("Inter", 13),
     foreground="#a9a9a9"
 )
-
 department_dropdown.place(x=425.0, y=357.0, width=591.0, height=39.0)
 department_dropdown.set("Department")
 
@@ -143,9 +144,13 @@ def create_employee():
         'address': entry_3.get(),
         'phone_number': entry_4.get()
     }
+    # Validate and create employee using backend
     success = backend.create_employee(employee_data)
     if success:
+        messagebox.showinfo("Success", "Employee created successfully!")
         clear_form()
+    else:
+        messagebox.showerror("Error", "Failed to create employee. Please check your input or try again.")
 
 button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
 button_1_canvas = Canvas(window, width=72, height=72, bg="#FFB37F", highlightthickness=0)

@@ -5,8 +5,9 @@ from tkinter import messagebox
 class CreateEmployeeFunction:
     def __init__(self):
         try:
-            cred = credentials.Certificate(r"C:\Users\Marites\Downloads\CC15project\backend\serviceAccountKey.json")
-            firebase_admin.initialize_app(cred)
+            if not firebase_admin._apps:
+                cred = credentials.Certificate(r"C:\Users\Marites\Downloads\CC15project\backend\serviceAccountKey.json")
+                firebase_admin.initialize_app(cred)
             self.db = firestore.client()
             print("Firebase initialized successfully")
         except Exception as e:
