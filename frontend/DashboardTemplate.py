@@ -114,13 +114,13 @@ class DashboardTemplate(Frame):
             image=self.button_image_1,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_1 clicked"),
+            command=delete_employee,
             relief="flat",
             cursor="hand2"
         )
         self.button_1.place(x=265.0, y=113.0, width=247.0, height=42.0)
 
-        # Button 2
+        #UPDATE EMPLOYEE BUTTON
         self.button_image_2 = PhotoImage(file=relative_to_assets("button_2.png"))
         self.images.append(self.button_image_2)
         self.button_2 = Button(
@@ -128,13 +128,13 @@ class DashboardTemplate(Frame):
             image=self.button_image_2,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_2 clicked"),
+            command=self.update_employee,
             relief="flat",
             cursor="hand2"
         )
         self.button_2.place(x=534.0, y=113.0, width=247.0, height=42.0)
 
-        # Button 3 (Navigation)
+        #CREATE EMPLOYEE BUTTON
         self.button_image_3 = PhotoImage(file=relative_to_assets("button_3.png"))
         self.images.append(self.button_image_3)
         self.button_3 = Button(
@@ -142,13 +142,13 @@ class DashboardTemplate(Frame):
             image=self.button_image_3,
             borderwidth=0,
             highlightthickness=0,
-            command=self.navigate_home,
+            command=self.create_employee,
             relief="flat",
             cursor="hand2"
         )
         self.button_3.place(x=37.0, y=113.0, width=161.15109252929688, height=41.803955078125)
 
-        # Button 4 (Logout)
+        #LOGOUT BUTTON
         self.button_image_4 = PhotoImage(file=relative_to_assets("button_4.png"))
         self.images.append(self.button_image_4)
         self.button_4 = Button(
@@ -162,7 +162,7 @@ class DashboardTemplate(Frame):
         )
         self.button_4.place(x=37.0, y=623.0, width=161.0, height=45.0)  
 
-    # Button 5
+        #ALL EMPLOYEES VIEW
         self.button_image_5 = PhotoImage(file=relative_to_assets("button_5.png"))
         self.images.append(self.button_image_5)
         self.button_5 = Button(
@@ -170,13 +170,13 @@ class DashboardTemplate(Frame):
             image=self.button_image_5,
             borderwidth=0,
             highlightthickness=0,
-            command=self.handle_department_view,  # Example functionality
+            command=self.view_all_employees,
             relief="flat",
             cursor="hand2"
         )
         self.button_5.place(x=37.0, y=228.0, width=141.0, height=24.0)
 
-        # Button 6
+        #SECRETARIAT VIEW
         self.button_image_6 = PhotoImage(file=relative_to_assets("button_6.png"))
         self.images.append(self.button_image_6)
         self.button_6 = Button(
@@ -184,13 +184,13 @@ class DashboardTemplate(Frame):
             image=self.button_image_6,
             borderwidth=0,
             highlightthickness=0,
-            command=self.handle_employee_directory,  # Example functionality
+            command=self.view_secretariat,
             relief="flat",
             cursor="hand2"
         )
         self.button_6.place(x=30.0, y=312.0, width=121.0, height=28.0)
 
-    # Button 7
+        #LOGICTICS VIEW
         self.button_image_7 = PhotoImage(file=relative_to_assets("button_7.png"))
         self.images.append(self.button_image_7)
         self.button_7 = Button(
@@ -198,13 +198,13 @@ class DashboardTemplate(Frame):
             image=self.button_image_7,
             borderwidth=0,
             highlightthickness=0,
-            command=self.handle_attendance,  # Example functionality
+            command=self.view_logistics,
             relief="flat",
             cursor="hand2"
         )
         self.button_7.place(x=37.0, y=346.0, width=85.0, height=24.0)
 
-        # Button 8
+        #SALES VIEW
         self.button_image_8 = PhotoImage(file=relative_to_assets("button_8.png"))
         self.images.append(self.button_image_8)
         self.button_8 = Button(
@@ -212,13 +212,13 @@ class DashboardTemplate(Frame):
             image=self.button_image_8,
             borderwidth=0,
             highlightthickness=0,
-            command=self.handle_payroll,  # Example functionality
+            command=self.view_sales,
             relief="flat",
             cursor="hand2"
         )
         self.button_8.place(x=37.0, y=377.0, width=51.0, height=24.0)
 
-        # Button 9
+        #LABOR VIEW
         self.button_image_9 = PhotoImage(file=relative_to_assets("button_9.png"))
         self.images.append(self.button_image_9)
         self.button_9 = Button(
@@ -226,13 +226,13 @@ class DashboardTemplate(Frame):
             image=self.button_image_9,
             borderwidth=0,
             highlightthickness=0,
-            command=self.handle_settings,  # Example functionality
+            command=self.view_labor,
             relief="flat",
             cursor="hand2"
         )
         self.button_9.place(x=37.0, y=405.0, width=55.0, height=24.0)
 
-        # Button 10
+        #PROPRIETOR VIEW
         self.button_image_10 = PhotoImage(file=relative_to_assets("button_10.png"))
         self.images.append(self.button_image_10)
         self.button_10 = Button(
@@ -240,66 +240,58 @@ class DashboardTemplate(Frame):
             image=self.button_image_10,
             borderwidth=0,
             highlightthickness=0,
-            command=self.handle_reports,  # Example functionality
+            command=self.view_proprietor,
             relief="flat",
             cursor="hand2"
         )
         self.button_10.place(x=37.0, y=432.0, width=95.0, height=24.0)
-
-    def navigate_home(self):
-        """Handle navigation to home/dashboard"""
-        if self.scene_manager:
-            self.scene_manager.show_scene("dashboard", user_data=self.user_data)
 
     def handle_logout(self):
         """Handle logout action"""
         if self.scene_manager:
             self.scene_manager.show_scene("login")
         else:
-            self.master.destroy()  # Fallback if no scene manager
+            self.master.destroy() 
 
-    def handle_department_view(self):
-        """Handle department view button click"""
-        if self.scene_manager:
-            self.scene_manager.show_scene("departments")
-        else:
-            print("Department view clicked")
+    def update_employee(self):
+        """update emp"""
+    
+    def delete_employee(self):
+        """delete emp"""
 
-    def handle_employee_directory(self):
-        """Handle employee directory button click"""
-        if self.scene_manager:
-            self.scene_manager.show_scene("employees")
-        else:
-            print("Employee directory clicked")
+    def create_employee(self):
+        """create emp"""
 
-    def handle_attendance(self):
-        """Handle attendance button click"""
-        if self.scene_manager:
-            self.scene_manager.show_scene("attendance")
-        else:
-            print("Attendance clicked")
+    def view_all_employees(self):
+        """View all employees"""
+        employees = get_all_employees()
+        print("All Employees:", employees)
 
-    def handle_payroll(self):
-        """Handle payroll button click"""
-        if self.scene_manager:
-            self.scene_manager.show_scene("payroll")
-        else:
-            print("Payroll clicked")
-
-    def handle_settings(self):
-        """Handle settings button click"""
-        if self.scene_manager:
-            self.scene_manager.show_scene("settings")
-        else:
-            print("Settings clicked")
-
-    def handle_reports(self):
-        """Handle reports button click"""
-        if self.scene_manager:
-            self.scene_manager.show_scene("reports")
-        else:
-            print("Reports clicked")
-
+    def view_secretariat(self):
+        """View secretariat employees"""
+        employees = get_employees_by_department("Secretariat")
+        print("Secretariat Employees:", employees)
+    
+    def view_logistics(self):
+        """View logistics employees"""
+        employees = get_employees_by_department("Logistics")
+        print("Logistics Employees:", employees)
+    
+    def view_sales(self):
+        """View sales employees"""
+        employees = get_employees_by_department("Sales")
+        print("Sales Employees:", employees)
+    
+    def view_labor(self):
+        """View labor employees"""
+        employees = get_employees_by_department("Labor")
+        print("Labor Employees:", employees)
+    
+    def view_proprietor(self):
+        """View proprietor employees"""
+        employees = get_employees_by_department("Proprietor")
+        print("Proprietor Employees:", employees)
+    
     def destroy(self):
         """Clean up resources when destroyed"""
         # Clear image references to help with garbage collection
@@ -307,6 +299,7 @@ class DashboardTemplate(Frame):
         super().destroy()
 
 if __name__ == "__main__":
+
     root = tk.Tk()
     app = DashboardTemplate(root)
     root.mainloop()
