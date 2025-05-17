@@ -5,6 +5,7 @@ from backend.SceneManager import SceneManager
 from frontend.MainWindow import LoginWindow
 from frontend.SignUpAdmin import SignUpAdminWindow
 from frontend.DashboardTemplate import DashboardTemplate
+from frontend.ResetPassword import ResetPasswordWindow
 
 def main():
     root = Tk()
@@ -13,6 +14,7 @@ def main():
     # Register scenes
     scene_manager.register_scene("login", lambda master: LoginWindow(master, scene_manager))
     scene_manager.register_scene("signup_admin", lambda master: SignUpAdminWindow(master, scene_manager))
+    scene_manager.register_scene("reset_password", lambda master: ResetPasswordWindow(master, scene_manager))
     scene_manager.register_scene( "dashboard", lambda master, user=None: DashboardTemplate(master, scene_manager, user_data=user)
 )
 

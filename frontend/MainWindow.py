@@ -153,12 +153,7 @@ class LoginWindow(Frame):  # Inherit from Frame
         self.scene_manager.show_scene("signup_admin")
     
     def handle_forgot_password(self):
-        email = self.email_entry.get()
-        if not email:
-            messagebox.showwarning("Input Error", "Please enter your email")
-            return
-        
-        self.auth_service.reset_password(email)
+        self.scene_manager.show_scene("reset_password")
 
 if __name__ == "__main__":
     root = Tk()

@@ -1,7 +1,7 @@
 import requests
 from pathlib import Path
 from tkinter import Frame, Tk, Canvas, Entry, Button, PhotoImage, messagebox, simpledialog
-from backend.MainWindowFunction import AuthService
+from backend.SignUpFunction import register_admin
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Marites\Downloads\CC15project\frontend\SignUpAdmin_Assets")
@@ -13,7 +13,6 @@ class SignUpAdminWindow(Frame):
     def __init__(self, master, scene_manager):
         super().__init__(master)
         self.scene_manager = scene_manager
-        self.auth_service = AuthService()
         self.keep_images_reference = []
         self.setup_ui()
     
@@ -216,10 +215,10 @@ class SignUpAdminWindow(Frame):
             return
         
         # Attempt registration
-        success, message = self.auth_service.register_admin(name, email, password, admin_code)
+        success, message = register_admin(name, email, password, admin_code)
         
         if success:
-            messagebox.showinfo("Success", message)
+            messagebox.showinfo("Success", "You may now login")
             self.scene_manager.show_scene("login")  # Return to login # Close the registration window
         else:
             messagebox.showerror("Registration Failed", message)
