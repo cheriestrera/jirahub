@@ -38,6 +38,10 @@ class CreateEmployeeWindow(Frame):
         self.setup_ui()
 
     def setup_ui(self):
+        self.master.geometry("1440x706")
+        self.master.configure(bg="#FFFFFF")
+        self.master.title("Admin Registration")
+
         self.canvas = Canvas(
             self,
             bg="#FFB37F",
@@ -65,6 +69,7 @@ class CreateEmployeeWindow(Frame):
             self.entry_image_4 = PhotoImage(file=relative_to_assets("entry_4.png"))
             self.entry_image_5 = PhotoImage(file=relative_to_assets("entry_5.png"))
             self.entry_image_6 = PhotoImage(file=relative_to_assets("entry_6.png"))
+            self.button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
             self.button_image_2 = PhotoImage(file=relative_to_assets("button_2.png"))
             self.button_image_3 = PhotoImage(file=relative_to_assets("button_3.png"))
         except Exception:
@@ -119,6 +124,18 @@ class CreateEmployeeWindow(Frame):
         )
         self.department_dropdown.place(x=425.0, y=357.0, width=591.0, height=39.0)
         self.department_dropdown.set("Department")
+
+        self.create_button = Button(
+            self,
+            image=self.button_image_1 if self.button_image_1 else None,
+            text="Create Employee" if not self.button_image_1 else "",
+            borderwidth=0,
+            highlightthickness=0,
+            command=self.create_employee,
+            relief="flat",
+            bg="#FFB37F"
+        )
+        self.create_button.place(x=417.0, y=123.0, width=72.0, height=72.0)
 
         # Create Employee button
         self.create_button = Button(
