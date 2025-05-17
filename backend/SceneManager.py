@@ -10,10 +10,6 @@ class SceneManager:
     
     def register_scene(self, name, scene_class):
         self.scenes[name] = scene_class 
-
-    def handle_register(self):
-    # Transition to the sign-up admin scene
-        self.scene_manager.show_scene("signup_admin")
     
     def show_scene(self, name, *args, **kwargs):
         # Hide current scene
