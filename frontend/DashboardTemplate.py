@@ -1,5 +1,10 @@
+import tkinter as tk
 from tkinter import Frame, Canvas, Button, PhotoImage
 from pathlib import Path
+from backend.DashboardWindowFunction import (
+    get_all_employees, get_employees_by_department,
+    add_employee, update_employee, delete_employee, get_employee
+)
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Marites\Downloads\CC15project\frontend\DashboardTemplate_Assets")
@@ -12,10 +17,13 @@ class DashboardTemplate(Frame):
         super().__init__(master)
         self.scene_manager = scene_manager
         self.user_data = user_data
-        self.images = []  # To store PhotoImage references
+        self.images = [] 
         self.setup_ui()
 
     def setup_ui(self):
+        self.master.geometry("1440x706")
+        self.master.title("JIRAH ENTERPRISES - Employee Management")
+
         self.canvas = Canvas(
             self,
             bg="#FFFFFF",
@@ -98,7 +106,7 @@ class DashboardTemplate(Frame):
 
     def create_buttons(self):
         """Create and place all buttons"""
-        # Button 1
+        #DELETE EMPLOYEE BUTTON
         self.button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
         self.images.append(self.button_image_1)
         self.button_1 = Button(
@@ -297,3 +305,8 @@ class DashboardTemplate(Frame):
         # Clear image references to help with garbage collection
         self.images.clear()
         super().destroy()
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = DashboardTemplate(root)
+    root.mainloop()
