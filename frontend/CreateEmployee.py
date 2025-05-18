@@ -1,3 +1,4 @@
+import threading
 from pathlib import Path
 from tkinter import Frame, Canvas, Entry, Button, PhotoImage, messagebox
 from tkinter.ttk import Combobox
@@ -40,7 +41,7 @@ class CreateEmployeeWindow(Frame):
     def setup_ui(self):
         self.master.geometry("1440x706")
         self.master.configure(bg="#FFFFFF")
-        self.master.title("Admin Registration")
+        self.master.title("Create Employee")
 
         self.canvas = Canvas(
             self,
@@ -125,23 +126,21 @@ class CreateEmployeeWindow(Frame):
         self.department_dropdown.place(x=425.0, y=357.0, width=591.0, height=39.0)
         self.department_dropdown.set("Department")
 
-        self.create_button = Button(
+        self.cancel_button = Button(
             self,
             image=self.button_image_1 if self.button_image_1 else None,
-            text="Create Employee" if not self.button_image_1 else "",
             borderwidth=0,
             highlightthickness=0,
-            command=self.create_employee,
+            command=self.handle_back,
             relief="flat",
             bg="#FFB37F"
         )
-        self.create_button.place(x=417.0, y=123.0, width=72.0, height=72.0)
+        self.cancel_button.place(x=417.0, y=123.0, width=72.0, height=72.0)
 
         # Create Employee button
         self.create_button = Button(
             self,
             image=self.button_image_2 if self.button_image_2 else None,
-            text="Create Employee" if not self.button_image_2 else "",
             borderwidth=0,
             highlightthickness=0,
             command=self.create_employee,
@@ -163,6 +162,10 @@ class CreateEmployeeWindow(Frame):
         )
         self.clear_button.place(x=831.0, y=534.0, width=90.0, height=48.0)
 
+    def handle_back(self):
+        self.clear_form()
+        self.scene_manager.show_scene("dashboard", self.user_data)
+
     def clear_form(self):
         self.entry_1.delete(0, "end")
         self.entry_2.delete(0, "end")
@@ -170,6 +173,7 @@ class CreateEmployeeWindow(Frame):
         self.entry_4.delete(0, "end")
         self.entry_5.delete(0, "end")
         self.department_dropdown.set("Department")
+
         # Reset placeholders
         self.entry_1._on_focus_out(None)
         self.entry_2._on_focus_out(None)
@@ -186,6 +190,11 @@ class CreateEmployeeWindow(Frame):
             'address': self.entry_3.get() if self.entry_3.get() != "Address" else "",
             'phone_number': self.entry_4.get() if self.entry_4.get() != "Phone Number" else ""
         }
-        success = self.backend.create_employee(employee_data)
-        if success:
-            self.clear_form()
+        print("Attempting to create employee with data:", employee_data)
+    
+        def do_create():
+            success = self.backend.create_employee(employee_data)
+            print("Create employee success:", success)
+            if success:
+                self.after(0, self.clear_form)
+        threading.Thread(target=do_create).start()

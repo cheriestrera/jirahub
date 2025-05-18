@@ -44,6 +44,7 @@ class CreateEmployeeFunction:
             doc_ref = self.db.collection('employees').document(employee_data['employee_id'])
             if doc_ref.get().exists:
                 messagebox.showerror("Error", "Employee ID already exists!")
+                print("Error: Employee ID already exists!")
                 return False
             
             doc_ref.set({
@@ -56,9 +57,13 @@ class CreateEmployeeFunction:
             })
             
             messagebox.showinfo("Success", "Employee created successfully!")
+            print("Employee created successfully!")
             return True
         except Exception as e:
             messagebox.showerror("Error", f"Failed to create employee: {str(e)}")
+            print("Exception in create_employee:", e)
+            import traceback
+            traceback.print_exc()  # Add this for full stack trace
             return False
     
     def get_all_departments(self):

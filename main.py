@@ -1,5 +1,3 @@
-# filepath: c:\Users\Marites\Downloads\CC15project\main.py
-
 from tkinter import Tk
 from backend.SceneManager import SceneManager
 from frontend.CreateEmployee import CreateEmployeeWindow

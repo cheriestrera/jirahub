@@ -182,7 +182,7 @@ class SignUpAdminWindow(Frame):
             image=self.button_image_2,  # Use the loaded image
             borderwidth=0,
             highlightthickness=0,
-            command=self.handle_clear,  # Clear form handler
+            command=self.handle_cancel,  # Clear form handler
             relief="flat",
             cursor="hand2"
         )
@@ -222,7 +222,7 @@ class SignUpAdminWindow(Frame):
 
         threading.Thread(target=do_register).start()
     
-    def handle_clear(self):
+    def handle_cancel(self):
         """Switch back to the main (login) window."""
         self.scene_manager.show_scene("login")
 
