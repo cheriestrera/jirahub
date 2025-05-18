@@ -33,29 +33,3 @@ class UpdateEmployeeService:
         except Exception as e:
             messagebox.showerror("Error", f"Failed to update employee: {str(e)}")
             return False
-        
-##############
-
-# Example usage in the frontend
-from backend.UpdateEmployeeFunction import UpdateEmployeeService
-from firebase_admin import firestore
-
-# Assuming Firestore is already initialized
-db = firestore.client()
-update_service = UpdateEmployeeService(db)
-
-# Example data
-employee_id = "12345"
-updated_data = {
-    "name": "John Doe",
-    "position": "Manager",
-    "salary": 75000
-}
-
-# Update the employee record
-success = update_service.update_employee(employee_id, updated_data)
-if success:
-    print("Employee updated successfully")
-else:
-    print("Failed to update employee")
-    

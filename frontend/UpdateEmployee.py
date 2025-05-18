@@ -1,8 +1,9 @@
+import firebase_admin
 from pathlib import Path
-from tkinter import messagebox
-
-from tkinter import Tk, Canvas, Entry, Button, PhotoImage, Label
+from tkinter import Tk, Canvas, Entry, Button, PhotoImage, Label, Frame, messagebox
 from tkinter.ttk import Combobox
+from firebase_admin import credentials, firestore
+from backend.UpdateEmployeeFunction import UpdateEmployeeService
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Marites\Downloads\CC15project\frontend\UpdateEmployee_Assets")
@@ -33,41 +34,57 @@ class EntryWithPlaceholder(Entry):
             self.insert(0, self.placeholder)
             self["fg"] = self.placeholder_color
 
-class UpdateEmployee:
-    # Simulated database as a class-level attribute
-    simulated_database = {
-        "12345": {
-            "first_name": "John",
-            "last_name": "Doe",
-            "address": "123 Elm St",
-            "phone_number": "555-1234",
-            "department": "Sales"
-        },
-        "67890": {
-            "first_name": "Jane",
-            "last_name": "Smith",
-            "address": "456 Elm St",
-            "phone_number": "555-5678",
-            "department": "Logistics"
-        }
-    }
-
-    def __init__(self, master, scene_manager):
+class UpdateEmployeeWindow(Frame):
+    def __init__(self, master, scene_manager=None):
+        super().__init__(master)
         self.master = master
         self.scene_manager = scene_manager
 
-        print("Initializing UpdateEmployee...")  # Debugging
+        # Initialize Firestore and backend service
+        if not firebase_admin._apps:
+            cred = credentials.Certificate(r"C:\Users\Marites\Downloads\CC15project\backend\serviceAccountKey.json")
+            firebase_admin.initialize_app(cred)
+        self.db = firestore.client()
+        self.update_service = UpdateEmployeeService(self.db)
 
-        # Add Employee ID first
-        Label(master, text="Employee ID", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=150.0)
-        self.entry_2 = Entry(master, font=("Inter", 12))
+        self.configure(bg="#FFB37F")
+        self.place_widgets()
+
+    def place_widgets(self):
+        # Canvas and title
+        self.canvas = Canvas(
+            self,
+            bg="#FFB37F",
+            height=706,
+            width=1440,
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
+        )
+        self.canvas.place(x=0, y=0)
+        self.canvas.create_text(
+            516.0,
+            65.0,
+            anchor="nw",
+            text="UPDATE EMPLOYEE",
+            fill="#040404",
+            font=("Inter", 40, "bold")
+        )
+
+        # Employee ID
+        Label(self, text="Employee ID", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=150.0)
+        self.entry_2 = Entry(self, font=("Inter", 12))
         self.entry_2.place(x=423.0, y=180.0, width=400.0, height=46.0)
 
-        # Add SEARCH EMPLOYEE BUTTON
-        button_image_4 = PhotoImage(
-            file=relative_to_assets("button_4.png"))  # Ensure the image file exists
+        # Search Employee Button
+        try:
+            button_image_4 = PhotoImage(file=relative_to_assets("button_4.png"))
+        except Exception:
+            button_image_4 = None
         self.button_4 = Button(
+            self,
             image=button_image_4,
+            text="Search" if not button_image_4 else "",
             borderwidth=0,
             highlightthickness=0,
             command=self.verify_employee_id,
@@ -76,158 +93,137 @@ class UpdateEmployee:
             bg="#FFB37F",
             activebackground="#FFB37F"
         )
-        self.button_4.image = button_image_4  # Keep a reference to avoid garbage collection
-        self.button_4.place(
-            x=840.0,
-            y=180.0,
-            width=182.0,
-            height=48.0
-        )
-        print("Button 4 created and placed.")
+        self.button_4.image = button_image_4
+        self.button_4.place(x=840.0, y=180.0, width=182.0, height=48.0)
 
-        # Add First Name
-        Label(master, text="First Name", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=250.0)
-        self.entry_1 = Entry(master, font=("Inter", 12), state="disabled")
+        # First Name
+        Label(self, text="First Name", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=250.0)
+        self.entry_1 = Entry(self, font=("Inter", 12), state="disabled")
         self.entry_1.place(x=423.0, y=280.0, width=284.0, height=39.0)
 
-        # Add Last Name
-        Label(master, text="Last Name", font=("Inter", 12), bg="#FFB37F").place(x=742.0, y=250.0)
-        self.entry_5 = Entry(master, font=("Inter", 12), state="disabled")
+        # Last Name
+        Label(self, text="Last Name", font=("Inter", 12), bg="#FFB37F").place(x=742.0, y=250.0)
+        self.entry_5 = Entry(self, font=("Inter", 12), state="disabled")
         self.entry_5.place(x=742.0, y=280.0, width=274.0, height=39.0)
 
-        # Add Address
-        Label(master, text="Address", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=320.0)
-        self.entry_3 = Entry(master, font=("Inter", 12), state="disabled")
+        # Address
+        Label(self, text="Address", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=320.0)
+        self.entry_3 = Entry(self, font=("Inter", 12), state="disabled")
         self.entry_3.place(x=423.0, y=350.0, width=593.0, height=39.0)
 
-        # Add Phone Number
-        Label(master, text="Phone Number", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=400.0)
-        self.entry_4 = Entry(master, font=("Inter", 12), state="disabled")
+        # Phone Number
+        Label(self, text="Phone Number", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=400.0)
+        self.entry_4 = Entry(self, font=("Inter", 12), state="disabled")
         self.entry_4.place(x=423.0, y=430.0, width=593.0, height=39.0)
 
-        # Add Department
-        Label(master, text="Department", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=480.0)
+        # Department
+        Label(self, text="Department", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=480.0)
         self.department_dropdown = Combobox(
-            master,
+            self,
             values=["Secretariat", "Logistics", "Sales", "Labor", "Proprietor"],
             font=("Inter", 13),
             foreground="#a9a9a9",
-            state="disabled"  # Disable dropdown by default
+            state="disabled"
         )
         self.department_dropdown.place(x=423.0, y=510.0, width=593.0, height=39.0)
-        self.department_dropdown.set("Department")  # Set default text
+        self.department_dropdown.set("Department")
 
-        # Add (<) BUTTON
-        button_image_1 = PhotoImage(
-            file=relative_to_assets("button_1.png"))  # Ensure the image file exists
+        # Back Button
+        try:
+            button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
+        except Exception:
+            button_image_1 = None
         self.button_1 = Button(
+            self,
             image=button_image_1,
+            text="<" if not button_image_1 else "",
             borderwidth=0,
             highlightthickness=0,
+            command=self.go_back,
             relief="flat",
             cursor="hand2",
             bg="#FFB37F",
             activebackground="#FFB37F"
         )
-        self.button_1.image = button_image_1  # Keep a reference to avoid garbage collection
-        self.button_1.place(
-            x=417.00,  # Adjust the x-coordinate as needed
-            y=50.0,  # Adjust the y-coordinate as needed
-            width=100.0,  # Adjust the width as needed
-            height=100  # Adjust the height as needed
-        )
-        print("Button 1 created and placed.")
+        self.button_1.image = button_image_1
+        self.button_1.place(x=417.0, y=50.0, width=100.0, height=100)
 
-        # Add Clear button
-        button_image_3 = PhotoImage(
-            file=relative_to_assets("button_3.png"))
+        # Clear Button
+        try:
+            button_image_3 = PhotoImage(file=relative_to_assets("button_3.png"))
+        except Exception:
+            button_image_3 = None
         self.button_3 = Button(
+            self,
             image=button_image_3,
+            text="Clear" if not button_image_3 else "",
             borderwidth=0,
             highlightthickness=0,
-            command=self.clear_fields,  # Bind the clear_fields method
+            command=self.clear_fields,
             relief="flat",
             cursor="hand2",
             bg="#FFB37F",
             activebackground="#FFB37F"
         )
-        self.button_3.image = button_image_3  # Keep a reference to avoid garbage collection
-        self.button_3.place(
-            x=740.0,
-            y=580.0,
-            width=90.0,
-            height=48.0
-        )
+        self.button_3.image = button_image_3
+        self.button_3.place(x=740.0, y=580.0, width=90.0, height=48.0)
 
-        # Add Update Employee Button
-        button_image_2 = PhotoImage(
-            file=relative_to_assets("button_2.png"))
+        # Update Employee Button
+        try:
+            button_image_2 = PhotoImage(file=relative_to_assets("button_2.png"))
+        except Exception:
+            button_image_2 = None
         self.button_2 = Button(
+            self,
             image=button_image_2,
+            text="Update" if not button_image_2 else "",
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: self.update_employee_data(self.entry_2.get()),  # Bind the update_employee_data method
+            command=lambda: self.update_employee_data(self.entry_2.get()),
             relief="flat",
             cursor="hand2",
             bg="#FFB37F",
             activebackground="#FFB37F"
         )
-        self.button_2.image = button_image_2  # Keep a reference to avoid garbage collection
-        self.button_2.place(
-            x=840.0,
-            y=580.0,
-            width=182.0,
-            height=48.0
-        )
-
-        print("Initializing UpdateEmployee...")  # Debugging
+        self.button_2.image = button_image_2
+        self.button_2.place(x=840.0, y=580.0, width=182.0, height=48.0)
 
     def verify_employee_id(self):
-        """Verify the Employee ID, populate fields, and allow updates to the record."""
         employee_id = self.entry_2.get()
         if not employee_id:
             messagebox.showerror("Error", "Please enter an Employee ID")
             return
 
-        # Simulate checking the employee ID in the database
-        employee_data = self.get_employee_data(employee_id)
-
-        if employee_data:
-            # Enable all other fields
+        employee_ref = self.db.collection('employees').document(employee_id)
+        doc = employee_ref.get()
+        if doc.exists:
+            employee_data = doc.to_dict()
             self.entry_1.config(state="normal")
             self.entry_3.config(state="normal")
             self.entry_4.config(state="normal")
             self.entry_5.config(state="normal")
             self.department_dropdown.config(state="readonly")
 
-            # Populate the fields with employee data
             self.entry_1.delete(0, 'end')
-            self.entry_1.insert(0, employee_data["first_name"])
+            self.entry_1.insert(0, employee_data.get("first_name", ""))
 
             self.entry_5.delete(0, 'end')
-            self.entry_5.insert(0, employee_data["last_name"])
+            self.entry_5.insert(0, employee_data.get("last_name", ""))
 
             self.entry_3.delete(0, 'end')
-            self.entry_3.insert(0, employee_data["address"])
+            self.entry_3.insert(0, employee_data.get("address", ""))
 
             self.entry_4.delete(0, 'end')
-            self.entry_4.insert(0, employee_data["phone_number"])
+            self.entry_4.insert(0, employee_data.get("phone_number", ""))
 
-            self.department_dropdown.set(employee_data["department"])
+            self.department_dropdown.set(employee_data.get("department", "Department"))
 
             messagebox.showinfo("Success", "Employee found! Fields populated. Make changes and click 'Update Employee' to save.")
-
-            # Add functionality to save changes
             self.button_2.config(command=lambda: self.update_employee_data(employee_id))
         else:
             messagebox.showerror("Error", "Employee not found. Please try again.")
 
-    def get_employee_data(self, employee_id):
-        """Retrieve employee data from the simulated database."""
-        return UpdateEmployee.simulated_database.get(employee_id)
-
     def clear_fields(self):
-        """Clear all text fields and reset the dropdown."""
         self.entry_1.delete(0, 'end')
         self.entry_2.delete(0, 'end')
         self.entry_3.delete(0, 'end')
@@ -240,9 +236,11 @@ class UpdateEmployee:
         self.entry_4.config(state="disabled")
         self.entry_5.config(state="disabled")
 
+    def go_back(self):
+        if self.scene_manager:
+            self.scene_manager.show_scene("dashboard")
+
     def update_employee_data(self, employee_id):
-        """Update the employee data with the values from the text fields."""
-        # Collect updated data from the text fields
         updated_data = {
             "first_name": self.entry_1.get(),
             "last_name": self.entry_5.get(),
@@ -250,52 +248,54 @@ class UpdateEmployee:
             "phone_number": self.entry_4.get(),
             "department": self.department_dropdown.get()
         }
-
-        # Simulate updating the database
-        success = self.save_employee_data(employee_id, updated_data)
-
+        success = self.update_service.update_employee(employee_id, updated_data)
         if success:
             messagebox.showinfo("Success", "Employee record updated successfully!")
-            # Reset the button to call clear_fields after updating
             self.button_2.config(command=self.clear_fields)
-            # Explicitly call clear_fields to clear the fields immediately
             self.clear_fields()
         else:
             messagebox.showerror("Error", "Failed to update employee record. Please try again.")
 
-    def save_employee_data(self, employee_id, updated_data):
-        """Save updated employee data to the simulated database."""
-        if employee_id in UpdateEmployee.simulated_database:
-            UpdateEmployee.simulated_database[employee_id] = updated_data  # Update the record
-            return True
-        return False
+    def verify_employee_id(self):
+        employee_id = self.entry_2.get()
+        if not employee_id:
+            messagebox.showerror("Error", "Please enter an Employee ID")
+            return
 
-#####################
+        employee_ref = self.db.collection('employees').document(employee_id)
+        doc = employee_ref.get()
+        if doc.exists:
+            employee_data = doc.to_dict()
+            self.entry_1.config(state="normal")
+            self.entry_3.config(state="normal")
+            self.entry_4.config(state="normal")
+            self.entry_5.config(state="normal")
+            self.department_dropdown.config(state="readonly")
 
-window = Tk()
+            self.entry_1.delete(0, 'end')
+            self.entry_1.insert(0, employee_data.get("first_name", ""))
 
-window.geometry("1440x706")
-window.configure(bg = "#FFB37F")
+            self.entry_5.delete(0, 'end')
+            self.entry_5.insert(0, employee_data.get("last_name", ""))
 
-canvas = Canvas(
-    window,
-    bg = "#FFB37F",
-    height = 706,
-    width = 1440,
-    bd = 0,
-    highlightthickness = 0,
-    relief = "ridge"
-)
+            self.entry_3.delete(0, 'end')
+            self.entry_3.insert(0, employee_data.get("address", ""))
 
-canvas.place(x = 0, y = 0)
-canvas.create_text(
-    516.0,
-    65.0,
-    anchor="nw",
-    text="UPDATE EMPLOYEE",
-    fill="#040404",
-    font=("Inter", 40, "bold")
-)
-app = UpdateEmployee(window, None)
-window.resizable(False, False)
-window.mainloop()
+            self.entry_4.delete(0, 'end')
+            self.entry_4.insert(0, employee_data.get("phone_number", ""))
+
+            self.department_dropdown.set(employee_data.get("department", "Department"))
+
+            messagebox.showinfo("Success", "Employee found! Fields populated. Make changes and click 'Update Employee' to save.")
+            self.button_2.config(command=lambda: self.update_employee_data(employee_id))
+        else:
+            messagebox.showerror("Error", "Employee not found. Please try again.")
+
+if __name__ == "__main__":
+    root = Tk()
+    root.geometry("1440x706")
+    root.configure(bg="#FFB37F")
+    app = UpdateEmployeeWindow(root)
+    app.pack(fill="both", expand=True)
+    root.resizable(False, False)
+    root.mainloop()

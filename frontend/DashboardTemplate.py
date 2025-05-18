@@ -254,10 +254,10 @@ class DashboardTemplate(Frame):
             self.master.destroy() 
 
     def update_employees(self):
-        """update emp"""
+        self.scene_manager.show_scene("update_employee")
     
     def delete_employees(self):
-        """delete emp"""
+        self.scene_manager.show_scene("delete_employee")
 
     def create_employees(self):
         self.scene_manager.show_scene("create_employee")
