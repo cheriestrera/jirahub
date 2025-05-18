@@ -1,5 +1,7 @@
 from pathlib import Path
-from tkinter import Frame, Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import Frame, Tk, Canvas, Entry, Button, PhotoImage, messagebox
+import threading
+from backend.ResetPasswordFunction import ResetPasswordFunction
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Marites\Downloads\CC15project\frontend\ResetPassword_Assets")
@@ -8,10 +10,11 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 class ResetPasswordWindow(Frame):
-    def __init__(self, master, scene_manager):
+    def __init__(self, master, scene_manager=None):
         super().__init__(master)
         self.scene_manager = scene_manager
         self.keep_images_reference = []
+        self.backend = ResetPasswordFunction()
         self.setup_ui()
 
     def setup_ui(self):
@@ -20,7 +23,7 @@ class ResetPasswordWindow(Frame):
         self.master.configure(bg="#FFB37F")
 
         self.canvas = Canvas(
-            self.master,
+            self,
             bg="#FFB37F",
             height=706,
             width=1440,
@@ -30,80 +33,44 @@ class ResetPasswordWindow(Frame):
         )
         self.canvas.place(x=0, y=0)
 
-        # Load and store images
+        # Load images
         self.load_images()
 
-        # Create UI elements
-        self.create_text_elements()
-        self.create_entry_fields()
-        self.create_buttons()
-        pass
+        # Center X for 1440 width
+        center_x = 1440 // 2
 
-    def load_images(self):
-        """Load all images and keep references"""
-        self.button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
-        self.keep_images_reference.append(self.button_image_1)
-
-        self.button_image_2 = PhotoImage(file=relative_to_assets("button_2.png"))
-        self.keep_images_reference.append(self.button_image_2)
-
-        self.entry_image_1 = PhotoImage(file=relative_to_assets("entry_1.png"))
-        self.keep_images_reference.append(self.entry_image_1)
-
-        self.entry_image_2 = PhotoImage(file=relative_to_assets("entry_2.png"))
-        self.keep_images_reference.append(self.entry_image_2)
-
-        self.entry_image_3 = PhotoImage(file=relative_to_assets("entry_3.png"))
-        self.keep_images_reference.append(self.entry_image_3)
-
-    def create_text_elements(self):
+        # Title
         self.canvas.create_text(
             533.0,
             94.0,
-            anchor="nw",
+            anchor="center",
             text="RESET PASSWORD",
             fill="#040404",
-            font=("Inter Bold", 51 * -1)
+            font=("Inter Bold", 51)
         )
 
+        # Email label
         self.canvas.create_text(
             434.0,
             185.0,
-            anchor="nw",
+            anchor="center",
             text="Email",
             fill="#040404",
-            font=("Inter Bold", 27 * -1)
+            font=("Inter Bold", 27)
         )
 
-        self.canvas.create_text(
-            434.0,
-            310.0,
-            anchor="nw",
-            text="Old Password",
-            fill="#040404",
-            font=("Inter Bold", 27 * -1)
-        )
+        # Email entry background (optional, if you have an image)
+        if hasattr(self, "entry_image_1"):
+            self.canvas.create_image(center_x, 290, image=self.entry_image_1)
 
-        self.canvas.create_text(
-            434.0,
-            435.0,
-            anchor="nw",
-            text="New Password",
-            fill="#040404",
-            font=("Inter Bold", 27 * -1)
-        )
-    
-    def create_entry_fields(self):
-        entry_bg_1 = self.canvas.create_image(
-            720.0,
-            259.5,
-            image=self.entry_image_1
-        )
+        # Email entry
         self.entry_1 = Entry(
+            self,
             bd=0,
             bg="#FFFFFF",
             fg="#000716",
-            highlightthickness=0
+            highlightthickness=0,
+            font=("Inter", 18)
         )
         self.entry_1.place(
             x=459.0,
@@ -112,75 +79,109 @@ class ResetPasswordWindow(Frame):
             height=63.0
         )
 
-        entry_bg_2 = self.canvas.create_image(
-            720.0,
-            384.5,
-            image=self.entry_image_2
-        )
-        self.entry_2 = Entry(
-            bd=0,
-            bg="#FFFFFF",
-            fg="#000716",
-            highlightthickness=0
-        )
-        self.entry_2.place(
-            x=459.0,
-            y=352.0,
-            width=522.0,
-            height=63.0
-        )
-
-        entry_bg_3 = self.canvas.create_image(
-            720.0,
-            509.5,
-            image=self.entry_image_3
-        )
-        self.entry_3 = Entry(
-            bd=0,
-            bg="#FFFFFF",
-            fg="#000716",
-            highlightthickness=0
-        )
-        self.entry_3.place(
-            x=459.0,
-            y=477.0,
-            width=522.0,
-            height=63.0
-        )
-    
-    def create_buttons(self):
-        button_1 = Button(
-            image=self.button_image_1,
+        # Cancel button
+        self.button_1 = Button(
+            self,
+            image=self.button_image_1 if hasattr(self, "button_image_1") else None,
+            text="Back" if not hasattr(self, "button_image_1") else "",
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_1 clicked"),
+            command=self.handle_cancel,
             relief="flat",
-            cursor="hand2"
+            cursor="hand2",
+            bg="#FFB37F"
         )
-        button_1.place(
+        self.button_1.place(
             x=434.0,
             y=86.0,
             width=72.0,
             height=72.0
         )
 
-        button_2 = Button(
-            image=self.button_image_2,
+        # Reset button (center right)
+        self.button_2 = Button(
+            self,
+            image=self.button_image_2 if hasattr(self, "button_image_2") else None,
+            text="Send Reset Link" if not hasattr(self, "button_image_2") else "",
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_2 clicked"),
+            command=self.handle_reset_password,
             relief="flat",
-            cursor="hand2"
+            cursor="hand2",
+            bg="#FFB37F"
         )
-        button_2.place(
+        self.button_2.place(
             x=627.0,
             y=576.0,
             width=185.0,
             height=48.0
         )
 
+    def load_images(self):
+        try:
+            self.button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
+            self.keep_images_reference.append(self.button_image_1)
+        except Exception:
+            self.button_image_1 = None
+        try:
+            self.button_image_2 = PhotoImage(file=relative_to_assets("button_2.png"))
+            self.keep_images_reference.append(self.button_image_2)
+        except Exception:
+            self.button_image_2 = None
+        try:
+            self.entry_image_1 = PhotoImage(file=relative_to_assets("entry_1.png"))
+            self.keep_images_reference.append(self.entry_image_1)
+        except Exception:
+            self.entry_image_1 = None
+
+    def handle_reset_password(self):
+        email = self.entry_1.get().strip()
+    
+        # Validate email format
+        if not email:
+            messagebox.showwarning("Input Error", "Please enter your email address.")
+            return
+        if "@" not in email or "." not in email:
+            messagebox.showwarning("Input Error", "Please enter a valid email address.")
+            return
+
+        # Disable button during processing
+        self.button_2.config(state="disabled")
+        self.button_2.config(text="Sending...")
+    
+        def do_reset():
+            try:
+                success, message = self.backend.send_reset_email(email)
+            
+                self.after(0, lambda: self.handle_reset_result(success, message))
+            except Exception as e:
+                error_message = f"An error occurred: {str(e)}"
+                self.after(0, lambda: self.handle_reset_result(False, error_message))
+
+        # Start the thread properly
+        reset_thread = threading.Thread(target=do_reset, daemon=True)
+        reset_thread.start()
+
+    def handle_reset_result(self, success, message):
+        # Re-enable button
+        self.button_2.config(state="normal")
+        self.button_2.config(text="Send Reset Link")
+    
+        if success:
+            messagebox.showinfo("Success", "If an account exists with this email, a password reset link has been sent.")
+            if self.scene_manager:
+                self.scene_manager.show_scene("login")
+        else:
+            messagebox.showerror("Error", message)
+
+    def handle_cancel(self):
+        if self.scene_manager:
+            self.scene_manager.show_scene("login")
+        self.entry_1.delete(0, 'end')
+
 if __name__ == "__main__":
     root = Tk()
     app = ResetPasswordWindow(root)
+    app.pack(fill="both", expand=True)
     root.resizable(False, False)
     root.mainloop()
