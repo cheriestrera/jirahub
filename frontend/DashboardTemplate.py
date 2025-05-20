@@ -1,13 +1,13 @@
 import tkinter as tk
 from tkinter import Frame, Canvas, Button, PhotoImage
 from pathlib import Path
+from frontend.EmployeeWidget import EmployeeWidget
 from backend.DashboardWindowFunction import (
-    get_all_employees, get_employees_by_department,
-    add_employee, update_employee, delete_employee, get_employee
+    get_all_employees, get_employees_by_department
 )
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Marites\Downloads\CC15project\frontend\DashboardTemplate_Assets")
+ASSETS_PATH = OUTPUT_PATH / "DashboardTemplate_Assets"
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -17,7 +17,7 @@ class DashboardTemplate(Frame):
         super().__init__(master)
         self.scene_manager = scene_manager
         self.user_data = user_data
-        self.images = [] 
+        self.images = []
         self.setup_ui()
 
     def setup_ui(self):
@@ -41,6 +41,31 @@ class DashboardTemplate(Frame):
         # Create UI elements
         self.create_text_elements()
         self.create_buttons()
+
+        # --- Scrollable Employees Area ---
+        self.employees_canvas = tk.Canvas(self, bg="#FFF4ED", highlightthickness=0)
+        self.employees_canvas.place(x=265, y=250, width=1100, height=400)
+
+        self.scrollbar = tk.Scrollbar(self, orient="vertical", command=self.employees_canvas.yview)
+        self.scrollbar.place(x=1365, y=250, height=400)
+
+        self.employees_frame = tk.Frame(self.employees_canvas, bg="#FFF4ED")
+        self.employees_frame.bind(
+            "<Configure>",
+            lambda e: self.employees_canvas.configure(
+                scrollregion=self.employees_canvas.bbox("all")
+            )
+        )
+
+        self.employees_canvas.create_window((0, 0), window=self.employees_frame, anchor="nw")
+        self.employees_canvas.configure(yscrollcommand=self.scrollbar.set)
+
+        # Mousewheel scrolling support
+        def _on_mousewheel(event):
+            self.employees_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+        self.employees_canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+        self.view_all_employees()
         
         # Set welcome message with actual admin name if available
         if self.user_data and 'name' in self.user_data:
@@ -57,7 +82,6 @@ class DashboardTemplate(Frame):
         )
 
     def load_images(self):
-        """Load and store all image references"""
         self.image_image_1 = PhotoImage(file=relative_to_assets("image_1.png"))
         self.images.append(self.image_image_1)
         self.canvas.create_image(112.0, 401.0, image=self.image_image_1)
@@ -71,7 +95,6 @@ class DashboardTemplate(Frame):
         self.canvas.create_image(1424.0, 552.0, image=self.image_image_3)
 
     def create_text_elements(self):
-        """Create all text elements on the canvas"""
         self.canvas.create_text(
             265.0, 198.0,
             anchor="nw",
@@ -105,8 +128,7 @@ class DashboardTemplate(Frame):
         )
 
     def create_buttons(self):
-        """Create and place all buttons"""
-        #DELETE EMPLOYEE BUTTON
+        # DELETE EMPLOYEE BUTTON
         self.button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
         self.images.append(self.button_image_1)
         self.button_1 = Button(
@@ -120,7 +142,7 @@ class DashboardTemplate(Frame):
         )
         self.button_1.place(x=265.0, y=113.0, width=247.0, height=42.0)
 
-        #UPDATE EMPLOYEE BUTTON
+        # UPDATE EMPLOYEE BUTTON
         self.button_image_2 = PhotoImage(file=relative_to_assets("button_2.png"))
         self.images.append(self.button_image_2)
         self.button_2 = Button(
@@ -134,7 +156,7 @@ class DashboardTemplate(Frame):
         )
         self.button_2.place(x=534.0, y=113.0, width=247.0, height=42.0)
 
-        #CREATE EMPLOYEE BUTTON
+        # CREATE EMPLOYEE BUTTON
         self.button_image_3 = PhotoImage(file=relative_to_assets("button_3.png"))
         self.images.append(self.button_image_3)
         self.button_3 = Button(
@@ -146,9 +168,9 @@ class DashboardTemplate(Frame):
             relief="flat",
             cursor="hand2"
         )
-        self.button_3.place(x=37.0, y=113.0, width=161.15109252929688, height=41.803955078125)
+        self.button_3.place(x=37.0, y=113.0, width=161.151, height=41.804)
 
-        #LOGOUT BUTTON
+        # LOGOUT BUTTON
         self.button_image_4 = PhotoImage(file=relative_to_assets("button_4.png"))
         self.images.append(self.button_image_4)
         self.button_4 = Button(
@@ -162,7 +184,7 @@ class DashboardTemplate(Frame):
         )
         self.button_4.place(x=37.0, y=623.0, width=161.0, height=45.0)  
 
-        #ALL EMPLOYEES VIEW
+        # ALL EMPLOYEES VIEW
         self.button_image_5 = PhotoImage(file=relative_to_assets("button_5.png"))
         self.images.append(self.button_image_5)
         self.button_5 = Button(
@@ -176,7 +198,7 @@ class DashboardTemplate(Frame):
         )
         self.button_5.place(x=37.0, y=228.0, width=141.0, height=24.0)
 
-        #SECRETARIAT VIEW
+        # SECRETARIAT VIEW
         self.button_image_6 = PhotoImage(file=relative_to_assets("button_6.png"))
         self.images.append(self.button_image_6)
         self.button_6 = Button(
@@ -190,7 +212,7 @@ class DashboardTemplate(Frame):
         )
         self.button_6.place(x=30.0, y=312.0, width=121.0, height=28.0)
 
-        #LOGICTICS VIEW
+        # LOGISTICS VIEW
         self.button_image_7 = PhotoImage(file=relative_to_assets("button_7.png"))
         self.images.append(self.button_image_7)
         self.button_7 = Button(
@@ -204,7 +226,7 @@ class DashboardTemplate(Frame):
         )
         self.button_7.place(x=37.0, y=346.0, width=85.0, height=24.0)
 
-        #SALES VIEW
+        # SALES VIEW
         self.button_image_8 = PhotoImage(file=relative_to_assets("button_8.png"))
         self.images.append(self.button_image_8)
         self.button_8 = Button(
@@ -218,7 +240,7 @@ class DashboardTemplate(Frame):
         )
         self.button_8.place(x=37.0, y=377.0, width=51.0, height=24.0)
 
-        #LABOR VIEW
+        # LABOR VIEW
         self.button_image_9 = PhotoImage(file=relative_to_assets("button_9.png"))
         self.images.append(self.button_image_9)
         self.button_9 = Button(
@@ -232,7 +254,7 @@ class DashboardTemplate(Frame):
         )
         self.button_9.place(x=37.0, y=405.0, width=55.0, height=24.0)
 
-        #PROPRIETOR VIEW
+        # PROPRIETOR VIEW
         self.button_image_10 = PhotoImage(file=relative_to_assets("button_10.png"))
         self.images.append(self.button_image_10)
         self.button_10 = Button(
@@ -263,34 +285,55 @@ class DashboardTemplate(Frame):
         self.scene_manager.show_scene("create_employee")
 
     def view_all_employees(self):
-        """View all employees"""
-        employees = get_all_employees()
-        print("All Employees:", employees)
+        """Fetch all employees and display them as widgets in a row/grid."""
+        # Clear previous widgets
+        for widget in self.employees_frame.winfo_children():
+            widget.destroy()
 
-    def view_secretariat(self):
-        """View secretariat employees"""
-        employees = get_employees_by_department("Secretariat")
-        print("Secretariat Employees:", employees)
+        employees = get_all_employees()  # This should return a list of dicts
+        if not employees:
+            tk.Label(self.employees_frame, text="No employees found.", bg="#FFF4ED").pack()
+            return
+
+        # Arrange in a grid, e.g., 3 per row
+        columns = 3
+        for idx, emp in enumerate(employees):
+            row = idx // columns
+            col = idx % columns
+            widget = EmployeeWidget(self.employees_frame, employee_data=emp)
+            widget.grid(row=row, column=col, padx=20, pady=20)
+
+    def view_department(self, department_name):
+        """Fetch and display employees by department."""
+        # Clear previous widgets
+        for widget in self.employees_frame.winfo_children():
+            widget.destroy()
+        employees = get_employees_by_department(department_name)
+        print(f"Viewing department: {department_name}, found: {len(employees)} employees")
+        if not employees:
+            tk.Label(self.employees_frame, text=f"No employees found in {department_name}.", bg="#FFF4ED").pack()
+            return
+        columns = 3
+        for idx, emp in enumerate(employees):
+            row = idx // columns
+            col = idx % columns
+            widget = EmployeeWidget(self.employees_frame, employee_data=emp)
+            widget.grid(row=row, column=col, padx=20, pady=20)
     
+    def view_secretariat(self):
+        self.view_department("Secretariat")
+
     def view_logistics(self):
-        """View logistics employees"""
-        employees = get_employees_by_department("Logistics")
-        print("Logistics Employees:", employees)
+        self.view_department("Logistics")
     
     def view_sales(self):
-        """View sales employees"""
-        employees = get_employees_by_department("Sales")
-        print("Sales Employees:", employees)
+        self.view_department("Sales")
     
     def view_labor(self):
-        """View labor employees"""
-        employees = get_employees_by_department("Labor")
-        print("Labor Employees:", employees)
+        self.view_department("Labor")
     
     def view_proprietor(self):
-        """View proprietor employees"""
-        employees = get_employees_by_department("Proprietor")
-        print("Proprietor Employees:", employees)
+        self.view_department("Proprietor")
     
     def destroy(self):
         """Clean up resources when destroyed"""

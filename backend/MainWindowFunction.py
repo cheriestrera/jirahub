@@ -1,18 +1,18 @@
 import firebase_admin
 import requests
 from firebase_admin import credentials, auth, firestore
-from typing import Tuple, Optional, Dict, Any
-from tkinter import messagebox
+from typing import Optional, Dict, Any
+from pathlib import Path
 import logging
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+CRED_PATH = BASE_DIR / "backend" / "serviceAccountKey.json"
 
 class AuthService:
     def __init__(self):
-        """Initialize Firebase authentication and Firestore"""
         if not firebase_admin._apps:
             try:
-                cred = credentials.Certificate(
-                    r"C:\Users\Marites\Downloads\CC15project\backend\serviceAccountKey.json"
-                )
+                cred = credentials.Certificate(str(CRED_PATH))
                 firebase_admin.initialize_app(cred)
             except Exception as e:
                 logging.error(f"Firebase initialization failed: {str(e)}")
@@ -44,4 +44,4 @@ class AuthService:
         }
         response = requests.post(url, json=payload)
         data = response.json()
-        return "email" in data  # Returns True if email sent, False otherwise
+        return "email" in data  

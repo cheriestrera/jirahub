@@ -4,7 +4,7 @@ from tkinter import Frame, Tk, Canvas, Entry, Button, PhotoImage, messagebox, si
 from backend.SignUpFunction import register_admin
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Marites\Downloads\CC15project\frontend\SignUpAdmin_Assets")
+ASSETS_PATH = OUTPUT_PATH / "SignUpAdmin_Assets"
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)

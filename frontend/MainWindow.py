@@ -6,7 +6,7 @@ from tkinter import Frame, Tk, Canvas, Entry, Button, PhotoImage, messagebox, si
 from backend.MainWindowFunction import AuthService
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Marites\Downloads\CC15project\frontend\MainWindow_Assets")
+ASSETS_PATH = OUTPUT_PATH / "MainWindow_Assets"
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)

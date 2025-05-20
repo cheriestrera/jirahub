@@ -4,7 +4,7 @@ import threading
 from backend.ResetPasswordFunction import ResetPasswordFunction
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Marites\Downloads\CC15project\frontend\ResetPassword_Assets")
+ASSETS_PATH = OUTPUT_PATH / "ResetPassword_Assets"
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -31,37 +31,37 @@ class ResetPasswordWindow(Frame):
             highlightthickness=0,
             relief="ridge"
         )
+
         self.canvas.place(x=0, y=0)
-
-        # Load images
         self.load_images()
-
-        # Center X for 1440 width
-        center_x = 1440 // 2
 
         # Title
         self.canvas.create_text(
             533.0,
-            94.0,
-            anchor="center",
+            186.0,
+            anchor="nw",
             text="RESET PASSWORD",
             fill="#040404",
-            font=("Inter Bold", 51)
+            font=("Inter Bold", 51 * -1)
         )
 
         # Email label
         self.canvas.create_text(
             434.0,
-            185.0,
-            anchor="center",
-            text="Email",
+            287.0,
+            anchor="nw",
+            text="Please enter your email:",
             fill="#040404",
-            font=("Inter Bold", 27)
+            font=("Inter Bold", 27 * -1)
         )
 
-        # Email entry background (optional, if you have an image)
-        if hasattr(self, "entry_image_1"):
-            self.canvas.create_image(center_x, 290, image=self.entry_image_1)
+        entry_image_1 = PhotoImage(
+            file=relative_to_assets("entry_1.png"))
+        self.entry_bg_1 = self.canvas.create_image(
+            720.0,
+            361.5,
+            image=entry_image_1
+        )
 
         # Email entry
         self.entry_1 = Entry(
@@ -70,11 +70,11 @@ class ResetPasswordWindow(Frame):
             bg="#FFFFFF",
             fg="#000716",
             highlightthickness=0,
-            font=("Inter", 18)
+            font=("Inter Regular", 24 * -1)
         )
         self.entry_1.place(
             x=459.0,
-            y=227.0,
+            y=329.0,
             width=522.0,
             height=63.0
         )
@@ -89,16 +89,16 @@ class ResetPasswordWindow(Frame):
             command=self.handle_cancel,
             relief="flat",
             cursor="hand2",
+            activebackground="#FFB37F",
             bg="#FFB37F"
         )
         self.button_1.place(
             x=434.0,
-            y=86.0,
+            y=175.0,
             width=72.0,
             height=72.0
         )
 
-        # Reset button (center right)
         self.button_2 = Button(
             self,
             image=self.button_image_2 if hasattr(self, "button_image_2") else None,
@@ -108,11 +108,12 @@ class ResetPasswordWindow(Frame):
             command=self.handle_reset_password,
             relief="flat",
             cursor="hand2",
+            activebackground="#FFB37F",
             bg="#FFB37F"
         )
         self.button_2.place(
             x=627.0,
-            y=576.0,
+            y=434.0,
             width=185.0,
             height=48.0
         )

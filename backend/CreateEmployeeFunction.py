@@ -1,12 +1,16 @@
+from pathlib import Path
 import firebase_admin
 from firebase_admin import credentials, firestore
 from tkinter import messagebox
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+CRED_PATH = BASE_DIR / "backend" / "serviceAccountKey.json"
 
 class CreateEmployeeFunction:
     def __init__(self):
         try:
             if not firebase_admin._apps:
-                cred = credentials.Certificate(r"C:\Users\Marites\Downloads\CC15project\backend\serviceAccountKey.json")
+                cred = credentials.Certificate(str(CRED_PATH))
                 firebase_admin.initialize_app(cred)
             self.db = firestore.client()
             print("Firebase initialized successfully")

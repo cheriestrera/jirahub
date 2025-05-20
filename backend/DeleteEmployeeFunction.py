@@ -1,9 +1,12 @@
+from pathlib import Path
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# Initialize Firebase only once
+BASE_DIR = Path(__file__).resolve().parent.parent
+CRED_PATH = BASE_DIR / "backend" / "serviceAccountKey.json"
+
 if not firebase_admin._apps:
-    cred = credentials.Certificate(r"C:\Users\Marites\Downloads\CC15project\backend\serviceAccountKey.json")
+    cred = credentials.Certificate(str(CRED_PATH))
     firebase_admin.initialize_app(cred)
 db = firestore.client()
 

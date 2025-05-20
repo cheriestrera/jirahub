@@ -5,7 +5,7 @@ from tkinter.ttk import Combobox
 from backend.CreateEmployeeFunction import CreateEmployeeFunction
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Marites\Downloads\CC15project\frontend\CreateEmployee_Assets")
+ASSETS_PATH = OUTPUT_PATH / "CreateEmployee_Assets"
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -197,4 +197,10 @@ class CreateEmployeeWindow(Frame):
             print("Create employee success:", success)
             if success:
                 self.after(0, self.clear_form)
+                self.after(0, lambda: messagebox.showinfo("Success", "Employee created successfully!"))
+                # --- Refresh dashboard employee list ---
+                if self.scene_manager:
+                    dashboard = self.scene_manager.get_scene("dashboard")
+                    if dashboard:
+                        dashboard.view_all_employees()  # or dashboard.display_all_employees()
         threading.Thread(target=do_create).start()

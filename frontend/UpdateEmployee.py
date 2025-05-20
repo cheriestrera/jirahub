@@ -6,7 +6,10 @@ from firebase_admin import credentials, firestore
 from backend.UpdateEmployeeFunction import UpdateEmployeeService
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Marites\Downloads\CC15project\frontend\UpdateEmployee_Assets")
+ASSETS_PATH = OUTPUT_PATH / "UpdateEmployee_Assets"
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+CRED_PATH = BASE_DIR / "backend" / "serviceAccountKey.json"
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -42,7 +45,7 @@ class UpdateEmployeeWindow(Frame):
 
         # Initialize Firestore and backend service
         if not firebase_admin._apps:
-            cred = credentials.Certificate(r"C:\Users\Marites\Downloads\CC15project\backend\serviceAccountKey.json")
+            cred = credentials.Certificate(str(CRED_PATH))
             firebase_admin.initialize_app(cred)
         self.db = firestore.client()
         self.update_service = UpdateEmployeeService(self.db)
@@ -250,8 +253,12 @@ class UpdateEmployeeWindow(Frame):
         }
         success = self.update_service.update_employee(employee_id, updated_data)
         if success:
-            messagebox.showinfo("Success", "Employee record updated successfully!")
-            self.button_2.config(command=self.clear_fields)
+            messagebox.showinfo("Success", "Employee record updated successfully")
+            # --- Refresh dashboard employee list ---
+            if self.scene_manager:
+                dashboard = self.scene_manager.get_scene("dashboard")
+                if dashboard:
+                    dashboard.view_all_employees()
             self.clear_fields()
         else:
             messagebox.showerror("Error", "Failed to update employee record. Please try again.")

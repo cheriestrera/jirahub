@@ -16,7 +16,7 @@ def main():
     scene_manager.register_scene("login", lambda master: LoginWindow(master, scene_manager))
     scene_manager.register_scene("signup_admin", lambda master: SignUpAdminWindow(master, scene_manager))
     scene_manager.register_scene("reset_password", lambda master: ResetPasswordWindow(master, scene_manager))
-    scene_manager.register_scene( "dashboard", lambda master, user=None: DashboardTemplate(master, scene_manager, user_data=user))
+    scene_manager.register_scene("dashboard", lambda master, user=None: DashboardTemplate(master, scene_manager, user_data=user))
     scene_manager.register_scene("create_employee", lambda master, user=None: CreateEmployeeWindow(master, scene_manager, user_data=user))
     scene_manager.register_scene("update_employee", lambda master, user=None: UpdateEmployeeWindow(master, scene_manager))
     scene_manager.register_scene("delete_employee", lambda master: DeleteEmployeeWindow(master, scene_manager))

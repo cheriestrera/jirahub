@@ -7,7 +7,10 @@ from backend.DeleteEmployeeFunction import get_employee_data, delete_employee
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Marites\Downloads\CC15project\frontend\DeleteEmployee_Assets")
+ASSETS_PATH = OUTPUT_PATH / "DeleteEmployee_Assets"
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+CRED_PATH = BASE_DIR / "backend" / "serviceAccountKey.json"
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -39,7 +42,7 @@ class DeleteEmployeeWindow(Frame):
 
         # Firestore init (only once)
         if not firebase_admin._apps:
-            cred = credentials.Certificate(r"C:\Users\Marites\Downloads\CC15project\backend\serviceAccountKey.json")
+            cred = credentials.Certificate(str(CRED_PATH))
             firebase_admin.initialize_app(cred)
         self.db = firestore.client()
 
@@ -112,14 +115,14 @@ class DeleteEmployeeWindow(Frame):
         self.entry_1.place(x=770.0, y=300.0, width=244.0, height=38.0)
 
         # Info Labels
-        self.label_fullname = Label(self, text="{Employee Full Name}", bg="#FFB37F", fg="#040404", font=("Inter", 17, "bold"))
-        self.label_fullname.place(x=451.0, y=365.0)
+        self.label_fullname = Label(self, text="{Employee Name}", bg="#FFB37F", fg="#040404", font=("Inter", 17, "bold"))
+        self.label_fullname.place(x=450.0, y=344.0)
         self.label_department = Label(self, text="{Employee Department}", bg="#FFB37F", fg="#737373", font=("Inter", 14, "bold"))
-        self.label_department.place(x=451.0, y=389.0)
+        self.label_department.place(x=450.0, y=375.0)
         self.label_email = Label(self, text="{Employee Email}", bg="#FFB37F", fg="#212121", font=("Inter", 12, "bold"))
-        self.label_email.place(x=502.0, y=425.0)
+        self.label_email.place(x=501.0, y=418.0)
         self.label_phone = Label(self, text="{Employee Phone Number}", bg="#FFB37F", fg="#212121", font=("Inter", 12, "bold"))
-        self.label_phone.place(x=502.0, y=451.0)
+        self.label_phone.place(x=501.0, y=444.0)
 
         # Search Button
         self.button_3 = Button(
@@ -204,5 +207,10 @@ class DeleteEmployeeWindow(Frame):
             self.label_phone.config(text="{Employee Phone Number}")
             self.entry_1.delete(0, "end")
             messagebox.showinfo("Success", "Employee deleted successfully")
+            # --- Refresh dashboard employee list ---
+            if self.scene_manager:
+                dashboard = self.scene_manager.get_scene("dashboard")
+                if dashboard:
+                    dashboard.view_all_employees()
         else:
             messagebox.showerror("Error", "Employee ID not found")
