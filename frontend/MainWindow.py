@@ -11,10 +11,10 @@ ASSETS_PATH = OUTPUT_PATH / "MainWindow_Assets"
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
-class LoginWindow(Frame):  # Inherit from Frame
+class LoginWindow(Frame):  
     def __init__(self, master, scene_manager):
         super().__init__(master)
-        self.scene_manager = scene_manager  # Store the SceneManager instance
+        self.scene_manager = scene_manager  
         self.auth_service = AuthService()
         self.images = []
         self.setup_ui()
@@ -34,11 +34,9 @@ class LoginWindow(Frame):  # Inherit from Frame
         )
         self.canvas.place(x=0, y=0)
         
-        # Background image
         image_image_1 = PhotoImage(file=relative_to_assets("image_1.png"))
         self.image_1 = self.canvas.create_image(321.0, 353.0, image=image_image_1)
-        
-        # Texts
+
         self.canvas.create_text(
             765.0, 122.0,
             anchor="nw",
@@ -63,7 +61,6 @@ class LoginWindow(Frame):  # Inherit from Frame
             font=("Inter Bold", 27 * -1)
         )
         
-        # Email Entry
         entry_image_1 = PhotoImage(file=relative_to_assets("entry_1.png"))
         self.entry_bg_1 = self.canvas.create_image(1041.0, 266.5, image=entry_image_1)
         self.email_entry = Entry(
@@ -75,7 +72,6 @@ class LoginWindow(Frame):  # Inherit from Frame
         )
         self.email_entry.place(x=790.0, y=234.0, width=502.0, height=63.0)
         
-        # Password Entry
         entry_image_2 = PhotoImage(file=relative_to_assets("entry_2.png"))
         self.entry_bg_2 = self.canvas.create_image(1041.0, 381.5, image=entry_image_2)
         self.password_entry = Entry(
@@ -88,7 +84,6 @@ class LoginWindow(Frame):  # Inherit from Frame
         )
         self.password_entry.place(x=790.0, y=349.0, width=502.0, height=63.0)
         
-        # Login Button
         button_image_2 = PhotoImage(file=relative_to_assets("button_2.png"))
         self.login_button = Button(
             image=button_image_2,
@@ -100,7 +95,6 @@ class LoginWindow(Frame):  # Inherit from Frame
         )
         self.login_button.place(x=1053.0, y=443.0, width=264.0, height=64.0)
         
-        # Register Button
         button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
         self.images.append(button_image_1)
         self.register_button = Button(
@@ -113,7 +107,6 @@ class LoginWindow(Frame):  # Inherit from Frame
         )
         self.register_button.place(x=765.0, y=443.0, width=264.0, height=64.0)
         
-        # Forgot Password Button
         button_image_3 = PhotoImage(file=relative_to_assets("button_3.png"))
         self.forgot_button = Button(
             image=button_image_3,
@@ -125,7 +118,6 @@ class LoginWindow(Frame):  # Inherit from Frame
         )
         self.forgot_button.place(x=765.0, y=520.0, width=552.0, height=64.0)
         
-        # Keep references to images
         self.images = [
             image_image_1, entry_image_1, entry_image_2,
             button_image_1, button_image_2, button_image_3
@@ -134,14 +126,10 @@ class LoginWindow(Frame):  # Inherit from Frame
     def handle_login(self):
         email = self.email_entry.get()
         password = self.password_entry.get()
-
         if not email or not password:
             messagebox.showwarning("Input Error", "Please enter both email and password")
             return
-
-    #    poopp
         user = self.auth_service.login(email, password)
-
         if user:
             messagebox.showinfo("Success", "Login successful!")
             print("dashboard running")

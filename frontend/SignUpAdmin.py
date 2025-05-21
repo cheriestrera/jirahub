@@ -32,17 +32,13 @@ class SignUpAdminWindow(Frame):
         )
         self.canvas.place(x=0, y=0)
         
-        # Load and store images
         self.load_images()
-        
-        # Create UI elements
         self.create_text_elements()
         self.create_entry_fields()
         self.create_buttons()
         pass
     
     def load_images(self):
-        """Load all images and keep references"""
         self.image_image_1 = PhotoImage(file=relative_to_assets("image_1.png"))
         self.keep_images_reference.append(self.image_image_1)
         self.canvas.create_image(321.0, 353.0, image=self.image_image_1)
@@ -63,7 +59,6 @@ class SignUpAdminWindow(Frame):
         self.keep_images_reference.append(self.button_image_2)
     
     def create_text_elements(self):
-        """Create all text elements on the canvas"""
         self.canvas.create_text(
             777.0, 94.0,
             anchor="nw",
@@ -97,12 +92,11 @@ class SignUpAdminWindow(Frame):
         )
     
     def create_entry_fields(self):
-        """Create all entry fields"""
-        # Name Entry
         self.entry_bg_3 = self.canvas.create_image(
             1053.0, 230.5,
             image=self.entry_image_3
         )
+
         self.name_entry = Entry(
             bd=0,
             bg="#F4F4F4",
@@ -117,7 +111,6 @@ class SignUpAdminWindow(Frame):
             height=63.0
         )
         
-        # Email Entry
         self.entry_bg_1 = self.canvas.create_image(
             1053.0, 349.5,
             image=self.entry_image_1
@@ -136,7 +129,6 @@ class SignUpAdminWindow(Frame):
             height=63.0
         )
         
-        # Password Entry
         self.entry_bg_2 = self.canvas.create_image(
             1053.0, 463.5,
             image=self.entry_image_2
@@ -157,10 +149,8 @@ class SignUpAdminWindow(Frame):
         )
     
     def create_buttons(self):
-        """Create all buttons"""
-        # Register Button (button_1)
         self.register_button = Button(
-            self.master,  # Changed to master since canvas is on master
+            self.master, 
             image=self.button_image_1,
             borderwidth=0,
             highlightthickness=0,
@@ -176,13 +166,12 @@ class SignUpAdminWindow(Frame):
             height=64.0
         )
 
-    # Cancel Button (button_2) - THIS IS THE FIXED VERSION
         self.cancel_button = Button(
-            self.master,  # Parent should match other widgets
-            image=self.button_image_2,  # Use the loaded image
+            self.master,  
+            image=self.button_image_2,  
             borderwidth=0,
             highlightthickness=0,
-            command=self.handle_cancel,  # Clear form handler
+            command=self.handle_cancel, 
             relief="flat",
             cursor="hand2"
         )
@@ -197,15 +186,12 @@ class SignUpAdminWindow(Frame):
         name = self.name_entry.get().strip()
         email = self.email_entry.get().strip()
         password = self.password_entry.get().strip()
-
         if not all([name, email, password]):
             messagebox.showwarning("Input Error", "Please fill in all fields")
             return
-
         if len(password) < 8:
             messagebox.showwarning("Input Error", "Password must be at least 8 characters")
             return
-
         admin_code = simpledialog.askstring("Admin Code", "Enter the admin code:")
         if not admin_code:
             return
@@ -219,11 +205,9 @@ class SignUpAdminWindow(Frame):
                 ])
             else:
                 self.after(0, lambda: messagebox.showerror("Registration Failed", message))
-
         threading.Thread(target=do_register).start()
     
     def handle_cancel(self):
-        """Switch back to the main (login) window."""
         self.scene_manager.show_scene("login")
 
 if __name__ == "__main__":

@@ -1,7 +1,6 @@
 from tkinter import Frame
 from frontend.SignUpAdmin import SignUpAdminWindow  
 
-
 class SceneManager:
     def __init__(self, root):
         self.root = root

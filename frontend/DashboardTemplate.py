@@ -35,21 +35,18 @@ class DashboardTemplate(Frame):
         )
         self.canvas.pack(fill="both", expand=True)
 
-        # Load and store all images
         self.load_images()
         
-        # Create UI elements
         self.create_text_elements()
         self.create_buttons()
 
-        # --- Scrollable Employees Area ---
-        self.employees_canvas = tk.Canvas(self, bg="#FFF4ED", highlightthickness=0)
+        self.employees_canvas = tk.Canvas(self, bg="#FFFFFF", highlightthickness=0)
         self.employees_canvas.place(x=265, y=250, width=1100, height=400)
 
         self.scrollbar = tk.Scrollbar(self, orient="vertical", command=self.employees_canvas.yview)
         self.scrollbar.place(x=1365, y=250, height=400)
 
-        self.employees_frame = tk.Frame(self.employees_canvas, bg="#FFF4ED")
+        self.employees_frame = tk.Frame(self.employees_canvas, bg="#FFFFFF")
         self.employees_frame.bind(
             "<Configure>",
             lambda e: self.employees_canvas.configure(
@@ -60,14 +57,12 @@ class DashboardTemplate(Frame):
         self.employees_canvas.create_window((0, 0), window=self.employees_frame, anchor="nw")
         self.employees_canvas.configure(yscrollcommand=self.scrollbar.set)
 
-        # Mousewheel scrolling support
         def _on_mousewheel(event):
             self.employees_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
         self.employees_canvas.bind_all("<MouseWheel>", _on_mousewheel)
 
         self.view_all_employees()
         
-        # Set welcome message with actual admin name if available
         if self.user_data and 'name' in self.user_data:
             welcome_text = f"WELCOME {self.user_data['name']}!"
         else:
@@ -269,7 +264,6 @@ class DashboardTemplate(Frame):
         self.button_10.place(x=37.0, y=432.0, width=95.0, height=24.0)
 
     def handle_logout(self):
-        """Handle logout action"""
         if self.scene_manager:
             self.scene_manager.show_scene("login")
         else:
@@ -285,27 +279,21 @@ class DashboardTemplate(Frame):
         self.scene_manager.show_scene("create_employee")
 
     def view_all_employees(self):
-        """Fetch all employees and display them as widgets in a row/grid."""
-        # Clear previous widgets
         for widget in self.employees_frame.winfo_children():
             widget.destroy()
 
-        employees = get_all_employees()  # This should return a list of dicts
+        employees = get_all_employees()  
         if not employees:
             tk.Label(self.employees_frame, text="No employees found.", bg="#FFF4ED").pack()
             return
-
-        # Arrange in a grid, e.g., 3 per row
         columns = 3
         for idx, emp in enumerate(employees):
             row = idx // columns
             col = idx % columns
             widget = EmployeeWidget(self.employees_frame, employee_data=emp)
-            widget.grid(row=row, column=col, padx=20, pady=20)
+            widget.grid(row=row, column=col, padx=8, pady=8)
 
     def view_department(self, department_name):
-        """Fetch and display employees by department."""
-        # Clear previous widgets
         for widget in self.employees_frame.winfo_children():
             widget.destroy()
         employees = get_employees_by_department(department_name)
@@ -318,7 +306,7 @@ class DashboardTemplate(Frame):
             row = idx // columns
             col = idx % columns
             widget = EmployeeWidget(self.employees_frame, employee_data=emp)
-            widget.grid(row=row, column=col, padx=20, pady=20)
+            widget.grid(row=row, column=col, padx=8, pady=8)
     
     def view_secretariat(self):
         self.view_department("Secretariat")
@@ -336,13 +324,10 @@ class DashboardTemplate(Frame):
         self.view_department("Proprietor")
     
     def destroy(self):
-        """Clean up resources when destroyed"""
-        # Clear image references to help with garbage collection
         self.images.clear()
         super().destroy()
 
 if __name__ == "__main__":
-
     root = tk.Tk()
     app = DashboardTemplate(root)
     root.mainloop()

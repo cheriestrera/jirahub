@@ -35,35 +35,32 @@ class ResetPasswordWindow(Frame):
         self.canvas.place(x=0, y=0)
         self.load_images()
 
-        # Title
         self.canvas.create_text(
             533.0,
-            186.0,
+            178.0,
             anchor="nw",
             text="RESET PASSWORD",
             fill="#040404",
             font=("Inter Bold", 51 * -1)
         )
 
-        # Email label
         self.canvas.create_text(
-            434.0,
-            287.0,
+            424.0,
+            275.0,
             anchor="nw",
             text="Please enter your email:",
             fill="#040404",
             font=("Inter Bold", 27 * -1)
         )
 
-        entry_image_1 = PhotoImage(
+        self.entry_image_1 = PhotoImage(
             file=relative_to_assets("entry_1.png"))
         self.entry_bg_1 = self.canvas.create_image(
             720.0,
             361.5,
-            image=entry_image_1
+            image=self.entry_image_1
         )
 
-        # Email entry
         self.entry_1 = Entry(
             self,
             bd=0,
@@ -79,7 +76,6 @@ class ResetPasswordWindow(Frame):
             height=63.0
         )
 
-        # Cancel button
         self.button_1 = Button(
             self,
             image=self.button_image_1 if hasattr(self, "button_image_1") else None,
@@ -137,8 +133,6 @@ class ResetPasswordWindow(Frame):
 
     def handle_reset_password(self):
         email = self.entry_1.get().strip()
-    
-        # Validate email format
         if not email:
             messagebox.showwarning("Input Error", "Please enter your email address.")
             return
@@ -146,7 +140,6 @@ class ResetPasswordWindow(Frame):
             messagebox.showwarning("Input Error", "Please enter a valid email address.")
             return
 
-        # Disable button during processing
         self.button_2.config(state="disabled")
         self.button_2.config(text="Sending...")
     
@@ -159,15 +152,12 @@ class ResetPasswordWindow(Frame):
                 error_message = f"An error occurred: {str(e)}"
                 self.after(0, lambda: self.handle_reset_result(False, error_message))
 
-        # Start the thread properly
         reset_thread = threading.Thread(target=do_reset, daemon=True)
         reset_thread.start()
 
     def handle_reset_result(self, success, message):
-        # Re-enable button
         self.button_2.config(state="normal")
         self.button_2.config(text="Send Reset Link")
-    
         if success:
             messagebox.showinfo("Success", "If an account exists with this email, a password reset link has been sent.")
             if self.scene_manager:

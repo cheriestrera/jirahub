@@ -39,13 +39,10 @@ class DeleteEmployeeWindow(Frame):
     def __init__(self, master, scene_manager=None):
         super().__init__(master)
         self.scene_manager = scene_manager
-
-        # Firestore init (only once)
         if not firebase_admin._apps:
             cred = credentials.Certificate(str(CRED_PATH))
             firebase_admin.initialize_app(cred)
         self.db = firestore.client()
-
         self.configure(bg="#FFB37F")
         self.place_widgets()
 
@@ -61,6 +58,7 @@ class DeleteEmployeeWindow(Frame):
             relief="ridge"
         )
         self.canvas.place(x=0, y=0)
+
         self.canvas.create_text(
             516.0,
             196.0,
@@ -70,7 +68,6 @@ class DeleteEmployeeWindow(Frame):
             font=("Inter", 51, "bold")
         )
 
-        # Images
         def safe_photoimage(path):
             try:
                 img = PhotoImage(file=relative_to_assets(path))
@@ -88,7 +85,6 @@ class DeleteEmployeeWindow(Frame):
         self.image_image_3 = safe_photoimage("image_3.png")
         self.image_image_4 = safe_photoimage("image_4.png")
 
-        # Back Button (as a Button for easier command)
         self.button_1 = Button(
             self,
             image=self.button_image_1,
@@ -102,7 +98,6 @@ class DeleteEmployeeWindow(Frame):
         )
         self.button_1.place(x=417.0, y=191.0, width=72, height=72)
 
-        # Entry for Employee ID
         self.entry_bg_1 = self.canvas.create_image(892.0, 320.0, image=self.entry_image_1)
         self.entry_1 = EntryWithPlaceholder(
             self,
@@ -112,9 +107,8 @@ class DeleteEmployeeWindow(Frame):
             highlightthickness=0,
             placeholder="Employee ID"
         )
+    
         self.entry_1.place(x=770.0, y=300.0, width=244.0, height=38.0)
-
-        # Info Labels
         self.label_fullname = Label(self, text="{Employee Name}", bg="#FFB37F", fg="#040404", font=("Inter", 17, "bold"))
         self.label_fullname.place(x=450.0, y=344.0)
         self.label_department = Label(self, text="{Employee Department}", bg="#FFB37F", fg="#737373", font=("Inter", 14, "bold"))
@@ -124,7 +118,6 @@ class DeleteEmployeeWindow(Frame):
         self.label_phone = Label(self, text="{Employee Phone Number}", bg="#FFB37F", fg="#212121", font=("Inter", 12, "bold"))
         self.label_phone.place(x=501.0, y=444.0)
 
-        # Search Button
         self.button_3 = Button(
             self,
             image=self.button_image_3,
@@ -137,7 +130,6 @@ class DeleteEmployeeWindow(Frame):
         )
         self.button_3.place(x=764.0, y=354.0, width=182.0, height=48.0)
 
-        # Delete Button
         self.button_2 = Button(
             self,
             image=self.button_image_2,
@@ -149,8 +141,6 @@ class DeleteEmployeeWindow(Frame):
             activebackground="#FFB37F"
         )
         self.button_2.place(x=764.0, y=413.0, width=182.0, height=48.0)
-
-        # Decorative Images
         self.image_1 = self.canvas.create_image(580.0, 407.0, image=self.image_image_1)
         self.image_2 = self.canvas.create_image(582.0, 446.0, image=self.image_image_2)
         self.image_3 = self.canvas.create_image(481.0, 433.0, image=self.image_image_3)
@@ -207,7 +197,6 @@ class DeleteEmployeeWindow(Frame):
             self.label_phone.config(text="{Employee Phone Number}")
             self.entry_1.delete(0, "end")
             messagebox.showinfo("Success", "Employee deleted successfully")
-            # --- Refresh dashboard employee list ---
             if self.scene_manager:
                 dashboard = self.scene_manager.get_scene("dashboard")
                 if dashboard:

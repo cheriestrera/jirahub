@@ -10,9 +10,9 @@ from frontend.ResetPassword import ResetPasswordWindow
 
 def main():
     root = Tk()
+    root.title("Jirahub")
     scene_manager = SceneManager(root)
 
-    # Register scenes
     scene_manager.register_scene("login", lambda master: LoginWindow(master, scene_manager))
     scene_manager.register_scene("signup_admin", lambda master: SignUpAdminWindow(master, scene_manager))
     scene_manager.register_scene("reset_password", lambda master: ResetPasswordWindow(master, scene_manager))
@@ -21,7 +21,6 @@ def main():
     scene_manager.register_scene("update_employee", lambda master, user=None: UpdateEmployeeWindow(master, scene_manager))
     scene_manager.register_scene("delete_employee", lambda master: DeleteEmployeeWindow(master, scene_manager))
 
-    # Show the login scene first
     scene_manager.show_scene("login")
 
     root.mainloop()

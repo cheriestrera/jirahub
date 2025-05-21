@@ -11,7 +11,6 @@ if not firebase_admin._apps:
 db = firestore.client()
 
 def get_employee_data(employee_id):
-    """Fetch employee data from Firestore by ID."""
     try:
         doc_ref = db.collection("employees").document(employee_id)
         doc = doc_ref.get()
@@ -19,12 +18,10 @@ def get_employee_data(employee_id):
             return doc.to_dict()
         else:
             return None
-    except Exception as e:
-        print(f"Failed to fetch employee data: {e}")
+    except Exception:
         return None
 
 def delete_employee(employee_id):
-    """Delete employee from Firestore by ID. Returns True if deleted, False otherwise."""
     try:
         doc_ref = db.collection("employees").document(employee_id)
         doc = doc_ref.get()
@@ -33,6 +30,5 @@ def delete_employee(employee_id):
             return True
         else:
             return False
-    except Exception as e:
-        print(f"Failed to delete employee: {e}")
+    except Exception:
         return False

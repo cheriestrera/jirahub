@@ -20,7 +20,7 @@ class AuthService:
         
         self.auth = auth
         self.db = firestore.client()
-        self.api_key = "AIzaSyDgOE9QEdwf0KAAJk1d0Zx4SvHzbK_rTzk"  # <-- Replace with your actual API key
+        self.api_key = "AIzaSyDgOE9QEdwf0KAAJk1d0Zx4SvHzbK_rTzk"  
 
     def login(self, email: str, password: str) -> Optional[Dict[str, Any]]:
         url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={self.api_key}"
@@ -32,9 +32,9 @@ class AuthService:
         response = requests.post(url, json=payload)
         data = response.json()
         if "idToken" in data:
-            return data  # Successful login, returns user info
+            return data  
         else:
-            return None  # Login failed
+            return None 
 
     def reset_password(self, email):
         url = f"https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={self.api_key}"

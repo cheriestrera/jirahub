@@ -62,7 +62,6 @@ class CreateEmployeeWindow(Frame):
             font=("Inter", 51, "bold")
         )
 
-        # Load images (optional, remove if not using images)
         try:
             self.entry_image_1 = PhotoImage(file=relative_to_assets("entry_1.png"))
             self.entry_image_2 = PhotoImage(file=relative_to_assets("entry_2.png"))
@@ -78,7 +77,6 @@ class CreateEmployeeWindow(Frame):
             self.entry_image_4 = self.entry_image_5 = self.entry_image_6 = None
             self.button_image_2 = self.button_image_3 = None
 
-        # Entry fields with placeholders
         if self.entry_image_1:
             self.canvas.create_image(565.0, 318.0, image=self.entry_image_1)
         self.entry_1 = EntryWithPlaceholder(
@@ -114,7 +112,6 @@ class CreateEmployeeWindow(Frame):
         )
         self.entry_5.place(x=742.0, y=298.0, width=274.0, height=39.0)
 
-        # Department dropdown
         if self.entry_image_6:
             self.canvas.create_image(719.5, 377.0, image=self.entry_image_6)
         self.department_dropdown = Combobox(
@@ -137,7 +134,6 @@ class CreateEmployeeWindow(Frame):
         )
         self.cancel_button.place(x=417.0, y=123.0, width=72.0, height=72.0)
 
-        # Create Employee button
         self.create_button = Button(
             self,
             image=self.button_image_2 if self.button_image_2 else None,
@@ -149,7 +145,6 @@ class CreateEmployeeWindow(Frame):
         )
         self.create_button.place(x=936.0, y=534.0, width=86.0, height=48.0)
 
-        # Clear Form button
         self.clear_button = Button(
             self,
             image=self.button_image_3 if self.button_image_3 else None,
@@ -174,7 +169,6 @@ class CreateEmployeeWindow(Frame):
         self.entry_5.delete(0, "end")
         self.department_dropdown.set("Department")
 
-        # Reset placeholders
         self.entry_1._on_focus_out(None)
         self.entry_2._on_focus_out(None)
         self.entry_3._on_focus_out(None)
@@ -190,17 +184,13 @@ class CreateEmployeeWindow(Frame):
             'address': self.entry_3.get() if self.entry_3.get() != "Address" else "",
             'phone_number': self.entry_4.get() if self.entry_4.get() != "Phone Number" else ""
         }
-        print("Attempting to create employee with data:", employee_data)
     
         def do_create():
             success = self.backend.create_employee(employee_data)
-            print("Create employee success:", success)
             if success:
                 self.after(0, self.clear_form)
-                self.after(0, lambda: messagebox.showinfo("Success", "Employee created successfully!"))
-                # --- Refresh dashboard employee list ---
                 if self.scene_manager:
                     dashboard = self.scene_manager.get_scene("dashboard")
                     if dashboard:
-                        dashboard.view_all_employees()  # or dashboard.display_all_employees()
+                        dashboard.view_all_employees()  
         threading.Thread(target=do_create).start()

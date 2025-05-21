@@ -15,7 +15,6 @@ if not firebase_admin._apps:
     api_key = "AIzaSyDgOE9QEdwf0KAAJk1d0Zx4SvHzbK_rTzk"
 
     def register_admin(name, email, password, admin_code):
-        # Optionally check admin_code here
         url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={api_key}"
         payload = {
             "email": email,
@@ -25,9 +24,7 @@ if not firebase_admin._apps:
         response = requests.post(url, json=payload)
         data = response.json()
         if "idToken" in data:
-            # Save 'name' and other info to Firestore
             try:
-                # Get the user's UID from the response
                 local_id = data.get("localId")
                 if local_id:
                     firestore.client().collection('users').document(local_id).set({

@@ -43,7 +43,6 @@ class UpdateEmployeeWindow(Frame):
         self.master = master
         self.scene_manager = scene_manager
 
-        # Initialize Firestore and backend service
         if not firebase_admin._apps:
             cred = credentials.Certificate(str(CRED_PATH))
             firebase_admin.initialize_app(cred)
@@ -54,7 +53,6 @@ class UpdateEmployeeWindow(Frame):
         self.place_widgets()
 
     def place_widgets(self):
-        # Canvas and title
         self.canvas = Canvas(
             self,
             bg="#FFB37F",
@@ -74,12 +72,10 @@ class UpdateEmployeeWindow(Frame):
             font=("Inter", 40, "bold")
         )
 
-        # Employee ID
         Label(self, text="Employee ID", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=150.0)
         self.entry_2 = Entry(self, font=("Inter", 12))
         self.entry_2.place(x=423.0, y=180.0, width=400.0, height=46.0)
 
-        # Search Employee Button
         try:
             button_image_4 = PhotoImage(file=relative_to_assets("button_4.png"))
         except Exception:
@@ -99,27 +95,22 @@ class UpdateEmployeeWindow(Frame):
         self.button_4.image = button_image_4
         self.button_4.place(x=840.0, y=180.0, width=182.0, height=48.0)
 
-        # First Name
         Label(self, text="First Name", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=250.0)
         self.entry_1 = Entry(self, font=("Inter", 12), state="disabled")
         self.entry_1.place(x=423.0, y=280.0, width=284.0, height=39.0)
 
-        # Last Name
         Label(self, text="Last Name", font=("Inter", 12), bg="#FFB37F").place(x=742.0, y=250.0)
         self.entry_5 = Entry(self, font=("Inter", 12), state="disabled")
         self.entry_5.place(x=742.0, y=280.0, width=274.0, height=39.0)
 
-        # Address
         Label(self, text="Address", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=320.0)
         self.entry_3 = Entry(self, font=("Inter", 12), state="disabled")
         self.entry_3.place(x=423.0, y=350.0, width=593.0, height=39.0)
 
-        # Phone Number
         Label(self, text="Phone Number", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=400.0)
         self.entry_4 = Entry(self, font=("Inter", 12), state="disabled")
         self.entry_4.place(x=423.0, y=430.0, width=593.0, height=39.0)
 
-        # Department
         Label(self, text="Department", font=("Inter", 12), bg="#FFB37F").place(x=423.0, y=480.0)
         self.department_dropdown = Combobox(
             self,
@@ -131,7 +122,6 @@ class UpdateEmployeeWindow(Frame):
         self.department_dropdown.place(x=423.0, y=510.0, width=593.0, height=39.0)
         self.department_dropdown.set("Department")
 
-        # Back Button
         try:
             button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
         except Exception:
@@ -151,7 +141,6 @@ class UpdateEmployeeWindow(Frame):
         self.button_1.image = button_image_1
         self.button_1.place(x=417.0, y=50.0, width=100.0, height=100)
 
-        # Clear Button
         try:
             button_image_3 = PhotoImage(file=relative_to_assets("button_3.png"))
         except Exception:
@@ -171,7 +160,6 @@ class UpdateEmployeeWindow(Frame):
         self.button_3.image = button_image_3
         self.button_3.place(x=740.0, y=580.0, width=90.0, height=48.0)
 
-        # Update Employee Button
         try:
             button_image_2 = PhotoImage(file=relative_to_assets("button_2.png"))
         except Exception:
@@ -244,6 +232,16 @@ class UpdateEmployeeWindow(Frame):
             self.scene_manager.show_scene("dashboard")
 
     def update_employee_data(self, employee_id):
+        first_name = self.entry_1.get().strip()
+        last_name = self.entry_5.get().strip()
+        address = self.entry_3.get().strip()
+        phone_number = self.entry_4.get().strip()
+        department = self.department_dropdown.get().strip()
+
+        if not all([first_name, last_name, address, phone_number, department]) or department == "Department":
+            messagebox.showerror("Error", "Please fill all fields")
+            return
+
         updated_data = {
             "first_name": self.entry_1.get(),
             "last_name": self.entry_5.get(),
@@ -254,7 +252,6 @@ class UpdateEmployeeWindow(Frame):
         success = self.update_service.update_employee(employee_id, updated_data)
         if success:
             messagebox.showinfo("Success", "Employee record updated successfully")
-            # --- Refresh dashboard employee list ---
             if self.scene_manager:
                 dashboard = self.scene_manager.get_scene("dashboard")
                 if dashboard:

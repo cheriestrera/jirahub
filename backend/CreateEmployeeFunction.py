@@ -32,7 +32,10 @@ class CreateEmployeeFunction:
                 messagebox.showerror("Validation Error", f"{field_name} is required!")
                 return False
         
-        # Validate phone number format
+        if employee_data['department'] == "Department":
+            messagebox.showerror("Validation Error", "Please select a valid department.")
+            return False
+
         phone = employee_data['phone_number']
         if not phone.isdigit() or len(phone) < 10:
             messagebox.showerror("Validation Error", "Phone number must be at least 10 digits and contain only numbers")
@@ -48,7 +51,6 @@ class CreateEmployeeFunction:
             doc_ref = self.db.collection('employees').document(employee_data['employee_id'])
             if doc_ref.get().exists:
                 messagebox.showerror("Error", "Employee ID already exists!")
-                print("Error: Employee ID already exists!")
                 return False
             
             doc_ref.set({
@@ -61,13 +63,11 @@ class CreateEmployeeFunction:
             })
             
             messagebox.showinfo("Success", "Employee created successfully!")
-            print("Employee created successfully!")
             return True
         except Exception as e:
             messagebox.showerror("Error", f"Failed to create employee: {str(e)}")
-            print("Exception in create_employee:", e)
             import traceback
-            traceback.print_exc()  # Add this for full stack trace
+            traceback.print_exc()
             return False
     
     def get_all_departments(self):
