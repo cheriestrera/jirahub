@@ -1,4 +1,3 @@
-import threading
 import tkinter as tk
 from tkinter import Frame, Canvas, Button, PhotoImage
 from pathlib import Path
@@ -282,17 +281,8 @@ class DashboardTemplate(Frame):
     def view_all_employees(self):
         for widget in self.employees_frame.winfo_children():
             widget.destroy()
-        loading_label = tk.Label(self.employees_frame, text="Loading...", bg="#FFF4ED")
-        loading_label.pack()
 
-        def fetch_and_display():
-            employees = get_all_employees()
-            self.employees_frame.after(0, lambda: self.display_employees(employees, loading_label))
-
-        threading.Thread(target=fetch_and_display).start()
-
-    def display_employees(self, employees, loading_label):
-        loading_label.destroy()
+        employees = get_all_employees()  
         if not employees:
             tk.Label(self.employees_frame, text="No employees found.", bg="#FFF4ED").pack()
             return
@@ -301,7 +291,7 @@ class DashboardTemplate(Frame):
             row = idx // columns
             col = idx % columns
             widget = EmployeeWidget(self.employees_frame, employee_data=emp)
-            widget.grid(row=row, column=col, padx=20, pady=20)
+            widget.grid(row=row, column=col, padx=8, pady=8)
 
     def view_department(self, department_name):
         for widget in self.employees_frame.winfo_children():
