@@ -11,6 +11,7 @@ from frontend.ResetPassword import ResetPasswordWindow
 def main():
     root = Tk()
     root.title("Jirahub")
+
     scene_manager = SceneManager(root)
 
     scene_manager.register_scene("login", lambda master: LoginWindow(master, scene_manager))
